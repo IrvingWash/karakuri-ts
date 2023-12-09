@@ -1,14 +1,21 @@
 {
     "name": "karakuri",
-    "private": false,
-    "engines": {
-        "node": ">=20.0.0"
+    "scripts": {
+        "build": "npm run build:dev",
+        "build:dev": "npm run clean && tsc --build tsconfig.build.dev.json",
+        "build:prod": "npm run clean && tsc --build tsconfig.build.prod.json",
+        "clean": "rm -rf ./build",
+        "compile-check": "tsc --noEmit"
     },
+    "private": false,
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
     "exports": {
         "types": "./build/index.d.ts",
         "default": "./build/index.js"
+    },
+    "engines": {
+        "node": ">=20.0.0"
     },
     "engineStrict": true,
     "author": "WI",
@@ -29,5 +36,8 @@
         "game",
         "video game",
         "webgpu"
-    ]
+    ],
+    "devDependencies": {
+        "typescript": "^5.3.3"
+    }
 }

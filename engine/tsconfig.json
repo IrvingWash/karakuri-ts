@@ -12,7 +12,7 @@
         "noLib": false,
 
         // Projects
-        "composite": true,
+        "composite": false,
         "disableReferencedProjectLoad": false,
         "disableSolutionSearching": false,
         "disableSourceOfProjectReferenceRedirect": false,
@@ -36,7 +36,7 @@
         "stripInternal": true, // TODO: check if we really need it
         "noEmitOnError": true,
         "removeComments": false,
-        "preserveConstEnums": false,
+        "preserveConstEnums": true,
         "emitBOM": false,
         "emitDeclarationOnly": false,
         "inlineSourceMap": false,
@@ -72,7 +72,7 @@
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
         "isolatedModules": true,
-        "verbatimModuleSyntax": true, // TODO: check if we really need it
+        "verbatimModuleSyntax": false, // TODO: check if we really need it
 
         // JS support
         "allowJs": false,
