@@ -5,6 +5,9 @@
         "engine",
         "sandbox"
     ],
+    "scripts": {
+        "start:dev": "npm run build:dev -w=engine && npm run dev -w=sandbox"
+    },
     "engines": {
         "node": ">=20.0.0"
     },
