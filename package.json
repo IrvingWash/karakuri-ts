@@ -1,0 +1,31 @@
+{
+	"name": "karakuri",
+	"private": true,
+	"workspaces": [
+		"engine",
+		"sandbox"
+	],
+	"engines": {
+		"node": ">=20.0.0"
+	},
+	"engineStrict": true,
+	"author": "WI",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/IrvingWash/karakuri.git"
+	},
+	"homepage": "https://github.com/IrvingWash/karakuri",
+	"readme": "https://github.com/IrvingWash/karakuri/README.md",
+	"bugs": {
+		"url": "https://github.com/IrvingWash/karakuri/issues"
+	},
+	"description": "2D game engine",
+	"keywords": [
+		"engine",
+		"game engine",
+		"game",
+		"video game",
+		"webgpu"
+	]
+}
