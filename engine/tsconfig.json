@@ -1,0 +1,91 @@
+{
+    "include": ["./src/**/*", "./tests/**/*"],
+    "compilerOptions": {
+        // Language and environment
+        "lib": ["ESNext", "DOM", "WebWorker"],
+        "target": "ESNext",
+        "experimentalDecorators": false,
+        "emitDecoratorMetadata": false,
+        "useDefineForClassFields": true,
+        "jsx": "preserve",
+        "moduleDetection": "auto",
+        "noLib": false,
+
+        // Projects
+        "composite": true,
+        "disableReferencedProjectLoad": false,
+        "disableSolutionSearching": false,
+        "disableSourceOfProjectReferenceRedirect": false,
+        "incremental": false,
+
+        // Modules
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        // TODO: add paths
+        // TODO: add types
+        "resolveJsonModule": true,
+        "allowArbitraryExtensions": false,
+        "allowImportingTsExtensions": false,
+        "allowUmdGlobalAccess": false,
+
+        // Emit
+        "outDir": "./build",
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "stripInternal": true, // TODO: check if we really need it
+        "noEmitOnError": true,
+        "removeComments": false,
+        "preserveConstEnums": false,
+        "emitBOM": false,
+        "emitDeclarationOnly": false,
+        "inlineSourceMap": false,
+        "inlineSources": false,
+        "newLine": "lf",
+
+        // Type checking
+        "strict": true,
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
+        "alwaysStrict": true,
+        "exactOptionalPropertyTypes": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitAny": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noPropertyAccessFromIndexSignature": true,
+        "noUncheckedIndexedAccess": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strictBindCallApply": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "strictPropertyInitialization": true,
+        "useUnknownInCatchVariables": true,
+
+        // Completeness
+        "skipLibCheck": true,
+
+        // Interop constraints
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "isolatedModules": true,
+        "verbatimModuleSyntax": true, // TODO: check if we really need it
+
+        // JS support
+        "allowJs": false,
+        "checkJs": false,
+
+        // Output formatting
+        "noErrorTruncation": false,
+        "preserveWatchOutput": false,
+        "pretty": true,
+
+        // Editor support
+        "disableSizeLimit": false
+    },
+    "exclude": ["node_modules", "build"],
+    "compileOnSave": false,
+}
