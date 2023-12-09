@@ -2,6 +2,7 @@
     "extends": "../tsconfig.json",
     "include": ["./**/*.ts"],
     "references": [
-        { "path": "../utils" }
+        { "path": "../utils" },
+        { "path": "../math" }
     ]
 }

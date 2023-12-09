@@ -1,4 +1,2 @@
-export { Canvas, type ICanvas } from "./core/canvas";
-export { Looper, type ILooper } from "./core/looper";
-
 export { Trigonometry } from "./math/trigonometry";
+export { Vector2, type IVector2 } from "./math/vector2";
