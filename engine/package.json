@@ -16,11 +16,11 @@
     },
     "type": "module",
     "private": false,
-    "main": "./build/index.js",
-    "types": "./build/index.d.ts",
+    "main": "./build/main.js",
+    "types": "./build/main.d.ts",
     "exports": {
-        "types": "./build/index.d.ts",
-        "default": "./build/index.js"
+        "types": "./build/man.d.ts",
+        "default": "./build/main.js"
     },
     "engines": {
         "node": ">=20.0.0"

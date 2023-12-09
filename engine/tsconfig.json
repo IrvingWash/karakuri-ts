@@ -4,6 +4,7 @@
         // Language and environment
         "lib": ["ESNext", "DOM", "WebWorker"],
         "target": "ESNext",
+        "types": ["@webgpu/types"],
         "experimentalDecorators": false,
         "emitDecoratorMetadata": false,
         "useDefineForClassFields": true,

@@ -2,8 +2,7 @@
     "extends": "../tsconfig.json",
     "compilerOptions": {
         "composite": true,
-        "incremental": true,
-        "types": ["@webgpu/types"]
+        "incremental": true
     },
     "include": ["./**/*.ts"]
 }
