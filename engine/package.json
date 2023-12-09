@@ -6,6 +6,8 @@
         "build:prod": "npm run clean && tsc --build tsconfig.build.prod.json",
         "compile-check": "tsc --noEmit",
         "test": "jest --force-exit --pass-with-no-tests",
+        "lint": "eslint \"src/**/*\" --report-unused-disable-directives --max-warnings=0",
+        "postlint": "eslint \"tests/**/*\" --report-unused-disable-directives --max-warnings=0",
         "clean": "rm -rf ./build"
     },
     "type": "module",

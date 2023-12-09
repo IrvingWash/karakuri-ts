@@ -4,9 +4,6 @@ env:
     worker: true
     es2024: true
 parser: "@typescript-eslint/parser"
-parserOptions:
-    project:
-        - "./engine/tsconfig.json"
 plugins:
     - "@stylistic"
     - "@typescript-eslint"
@@ -16,6 +13,7 @@ ignorePatterns:
     - "node_modules"
     - "build"
     - "jest.config.js"
+    - "*.json"
 rules:
     newline-before-return:
         - error
