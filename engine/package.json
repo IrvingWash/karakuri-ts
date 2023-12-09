@@ -1,14 +1,18 @@
 {
     "name": "karakuri",
     "scripts": {
-        "build": "npm run build:dev",
-        "build:dev": "npm run clean && tsc --build tsconfig.build.dev.json",
-        "build:prod": "npm run clean && tsc --build tsconfig.build.prod.json",
+        "build:dev": "tsc --build tsconfig.build.dev.json",
+        "build:prod": "tsc --build tsconfig.build.prod.json",
         "compile-check": "tsc --noEmit",
         "test": "jest --force-exit --pass-with-no-tests",
         "lint": "eslint \"src/**/*\" --report-unused-disable-directives --max-warnings=0",
-        "postlint": "eslint \"tests/**/*\" --report-unused-disable-directives --max-warnings=0",
-        "clean": "rm -rf ./build"
+        "clean": "rm -rf ./build",
+        "link": "npm link",
+        "prebuild:dev": "npm run clean",
+        "prebuild:prod": "npm run clean",
+        "postbuild:dev": "npm run link",
+        "postbuild:prod": "npm run link",
+        "postlint": "eslint \"tests/**/*\" --report-unused-disable-directives --max-warnings=0"
     },
     "type": "module",
     "private": false,
