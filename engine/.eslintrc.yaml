@@ -8,6 +8,7 @@ parserOptions:
     project:
         - "./engine/tsconfig.json"
 plugins:
+    - "@stylistic"
     - "@typescript-eslint"
     - "optional-params"
     - "import"
@@ -15,45 +16,45 @@ ignorePatterns:
     - "node_modules"
     - "build"
 rules:
-    indent:
-        - error
-        - 4
-    linebreak-style:
-        - error
-        - unix
-    quotes:
-        - error
-        - double
-    semi:
-        - error
-    eol-last:
-        - error
-    object-curly-spacing:
-        - error
-        - always
-    comma-dangle:
-        - error
-        - always-multiline
-    no-trailing-spaces:
-        - error
-    no-multiple-empty-lines:
-        - error
-        - max: 1
-    space-infix-ops:
-        - error
-    space-in-parens:
-        - error
-        - never
-    space-before-function-paren:
-        - error
-        - never
-    keyword-spacing:
-        - error
-    space-before-blocks:
-        - error
     newline-before-return:
         - error
-    no-multi-spaces:
+    '@stylistic/indent':
+        - error
+        - 4
+    '@stylistic/linebreak-style':
+        - error
+        - unix
+    '@stylistic/quotes':
+        - error
+        - double
+    '@stylistic/semi':
+        - error
+    '@stylistic/eol-last':
+        - error
+    '@stylistic/object-curly-spacing':
+        - error
+        - always
+    '@stylistic/comma-dangle':
+        - error
+        - always-multiline
+    '@stylistic/no-trailing-spaces':
+        - error
+    '@stylistic/no-multiple-empty-lines':
+        - error
+        - max: 1
+    '@stylistic/space-infix-ops':
+        - error
+    '@stylistic/space-in-parens':
+        - error
+        - never
+    '@stylistic/space-before-function-paren':
+        - error
+        - never
+    '@stylistic/keyword-spacing':
+        - error
+    '@stylistic/space-before-blocks':
+        - error
+    '@stylistic/no-multi-spaces':
         - error
     optional-params/max-optional-params:
         - error
