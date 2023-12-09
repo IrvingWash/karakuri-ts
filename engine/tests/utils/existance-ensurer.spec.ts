@@ -1,6 +1,6 @@
 import { describe, it, expect } from "@jest/globals";
 
-import { ensureExists } from "../../src/utils/existance-ensurer";
+import { ensureExists } from "../../src/utils/existence-ensurer";
 
 describe("ensureExists", () => {
     it("should throw an error with the predefined message when an undefined value is passed", () => {

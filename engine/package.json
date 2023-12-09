@@ -50,6 +50,7 @@
         "@stylistic/eslint-plugin": "^1.5.0",
         "@typescript-eslint/eslint-plugin": "^6.13.2",
         "@typescript-eslint/parser": "^6.13.2",
+        "@webgpu/types": "^0.1.40",
         "eslint": "^8.55.0",
         "eslint-plugin-import": "^2.29.0",
         "eslint-plugin-optional-params": "^0.0.5",
