@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@jest/globals";
 
-import { hello } from "@src/hello";
+import { hello } from "../src/hello";
 
 describe("test", () => {
     it("test", () => {

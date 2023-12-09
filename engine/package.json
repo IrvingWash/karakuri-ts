@@ -5,7 +5,7 @@
         "build:dev": "npm run clean && tsc --build tsconfig.build.dev.json",
         "build:prod": "npm run clean && tsc --build tsconfig.build.prod.json",
         "compile-check": "tsc --noEmit",
-        "test": "jest -c=./tests/jest.config.js --force-exit --pass-with-no-tests",
+        "test": "jest --force-exit --pass-with-no-tests",
         "clean": "rm -rf ./build"
     },
     "type": "module",
