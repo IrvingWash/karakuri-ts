@@ -19,8 +19,9 @@
         "incremental": false,
 
         // Modules
-        "module": "NodeNext",
-        "moduleResolution": "NodeNext",
+        "rootDir": "./",
+        "module": "ESNext",
+        "moduleResolution": "Node",
         // TODO: add paths
         // TODO: add types
         "resolveJsonModule": true,

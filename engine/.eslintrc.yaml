@@ -15,6 +15,7 @@ plugins:
 ignorePatterns:
     - "node_modules"
     - "build"
+    - "jest.config.js"
 rules:
     newline-before-return:
         - error
