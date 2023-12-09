@@ -1,4 +1,4 @@
-import { IInput } from "./iinput";
+import type { IInput } from "./iinput";
 
 export class Input implements IInput {
     private _keyStates: Record<string, boolean> = {};

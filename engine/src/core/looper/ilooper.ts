@@ -1,4 +1,4 @@
-import { LooperCallback } from "./looper-objects";
+import type { LooperCallback } from "./looper-objects";
 
 export interface ILooper {
     start(cb: LooperCallback): void;

@@ -1,0 +1,10 @@
+{
+    "extends": "../tsconfig.json",
+    "include": ["./**/*.ts"],
+    "references": [
+        { "path": "../utils" },
+        { "path": "../math" },
+        { "path": "../components" },
+        { "path": "../core" }
+    ]
+}

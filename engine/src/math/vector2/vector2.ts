@@ -1,4 +1,4 @@
-import { IVector2 } from "./ivector2";
+import type { IVector2 } from "./ivector2";
 
 export class Vector2 implements IVector2 {
     public x: number;

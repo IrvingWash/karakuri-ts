@@ -1,5 +1,5 @@
-import { ILooper } from "./ilooper";
-import { LooperCallback } from "./looper-objects";
+import type { ILooper } from "./ilooper";
+import type { LooperCallback } from "./looper-objects";
 
 const SECONDS_IN_MILLISECOND = 1 / 1000;
 

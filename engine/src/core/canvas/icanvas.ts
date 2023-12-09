@@ -1,4 +1,4 @@
-import { CanvasSize } from "./canvas-objects";
+import type { CanvasSize } from "./canvas-objects";
 
 export interface ICanvas {
     getElement(): HTMLCanvasElement;
