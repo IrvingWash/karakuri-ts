@@ -38,6 +38,11 @@
         "webgpu"
     ],
     "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^6.13.2",
+        "@typescript-eslint/parser": "^6.13.2",
+        "eslint": "^8.55.0",
+        "eslint-plugin-import": "^2.29.0",
+        "eslint-plugin-optional-params": "^0.0.5",
         "typescript": "^5.3.3"
     }
 }
