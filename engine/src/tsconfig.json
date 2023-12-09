@@ -2,7 +2,10 @@
     "extends": "../tsconfig.json",
     "compilerOptions": {
         "composite": true,
-        "incremental": true
+        "incremental": true,
+        "paths": {
+            "@utils/*": ["./utils/*"]
+        }
     },
-    "include": ["./*"]
+    "include": ["./*/**.ts"]
 }
