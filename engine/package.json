@@ -1,12 +1,14 @@
 {
-	"name": "karakuri-project",
-	"private": true,
-	"workspaces": [
-		"engine",
-		"sandbox"
-	],
+	"name": "karakuri",
+	"private": false,
 	"engines": {
 		"node": ">=20.0.0"
+	},
+	"main": "./build/index.js",
+	"types": "./build/index.d.ts",
+	"exports": {
+		"types": "./build/index.d.ts",
+		"default": "./build/index.js"
 	},
 	"engineStrict": true,
 	"author": "WI",
@@ -20,5 +22,12 @@
 	"bugs": {
 		"url": "https://github.com/IrvingWash/karakuri/issues"
 	},
-	"description": "2D game engine ecosystem"
+	"description": "2D game engine",
+	"keywords": [
+		"engine",
+		"game engine",
+		"game",
+		"video game",
+		"webgpu"
+	]
 }
