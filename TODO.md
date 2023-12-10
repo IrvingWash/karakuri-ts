@@ -1,6 +1,7 @@
 # Todo
 
 - [ ] WebGPU Rendering
+- [ ] Matrix math
 - [ ] Improve input
 - [ ] Physics
 - [ ] Animation
