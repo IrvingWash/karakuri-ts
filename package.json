@@ -10,6 +10,9 @@
         "test": "npm run test --workspaces --if-present",
         "lint": "npm run lint --workspaces --if-present",
         "compile-check": "npm run compile-check --workspaces --if-present",
+        "test-lib": "npm run test -w=engine",
+        "lint-lib": "npm run lint -w=engine",
+        "compile-check-lib": "npm run compile-check -w=engine",
         "prepare": "husky install"
     },
     "engines": {
