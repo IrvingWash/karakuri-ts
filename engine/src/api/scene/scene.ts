@@ -30,7 +30,7 @@ export class Scene implements IScene {
     }
 
     public createEntity(params: EntityParams): IEntity {
-        const entity = new Entity(params);
+        const entity: IEntity = new Entity(params);
 
         entity.__init(this._input);
         entity.start();
