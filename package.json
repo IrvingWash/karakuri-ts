@@ -6,7 +6,11 @@
         "sandbox"
     ],
     "scripts": {
-        "start:dev": "npm run build:dev -w=engine && npm run dev -w=sandbox"
+        "start:dev": "npm run build:dev -w=engine && npm run dev -w=sandbox",
+        "test": "npm run test --workspaces --if-present",
+        "lint": "npm run lint --workspaces --if-present",
+        "compile-check": "npm run compile-check --workspaces --if-present",
+        "prepare": "husky install"
     },
     "engines": {
         "node": ">=20.0.0"
@@ -23,5 +27,8 @@
     "bugs": {
         "url": "https://github.com/IrvingWash/karakuri/issues"
     },
-    "description": "2D game engine ecosystem"
+    "description": "2D game engine ecosystem",
+    "devDependencies": {
+        "husky": "^8.0.0"
+    }
 }
