@@ -1,4 +1,4 @@
-import { type IScene, Scene, Behavior } from "karakuri";
+import { Karakuri, Behavior } from "karakuri";
 
 class Player extends Behavior {
     public onStart(): void {
@@ -11,9 +11,10 @@ class Player extends Behavior {
 }
 
 export async function game(): Promise<void> {
-    const scene: IScene = new Scene();
+    const karakuri = new Karakuri();
+    await karakuri.init();
 
-    scene.init();
+    const scene = karakuri.createScene();
 
     scene.createEntity({
         behavior: new Player(),
