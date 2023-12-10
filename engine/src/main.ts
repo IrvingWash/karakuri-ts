@@ -1,5 +1,4 @@
 export { Karakuri, type EngineConfiguration } from "./api/karakuri";
-export { Entity, type IEntity } from "./api/entity";
 
 export { Transform, type ITransform } from "./components/transform";
 export { Behavior } from "./components/behavior";
