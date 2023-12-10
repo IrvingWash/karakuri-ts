@@ -1,13 +1,13 @@
-import { ICanvas } from "../canvas";
+import { CanvasSize } from "../canvas";
 
 export class Renderer {
-    private _canvas: ICanvas;
+    private _canvasSize: CanvasSize;
     private _ctx: GPUCanvasContext;
     private _device!: GPUDevice;
 
-    public constructor(canvas: ICanvas) {
-        this._canvas = canvas;
-        this._ctx = canvas.getContextGpu();
+    public constructor(canvasSize: CanvasSize, ctx: GPUCanvasContext) {
+        this._canvasSize = canvasSize;
+        this._ctx = ctx;
     }
 
     public async init(): Promise<void> {
@@ -27,7 +27,7 @@ export class Renderer {
     }
 
     public test(): void {
-        console.log(this._canvas);
+        console.log(this._canvasSize);
         console.log(this._device);
     }
 }

@@ -1,16 +1,16 @@
 import { Canvas, type ICanvas } from "../../core/canvas";
 import { Looper, type ILooper } from "../../core/looper";
 import { Input, type IInput } from "../../core/input";
+import { Renderer, type IRenderer } from "../../core/renderer";
+import { Entity, type IEntity, type EntityParams } from "../entity";
 import { SceneSize } from "./scene-objects";
-import { Entity } from "../entity/entity";
 import type { IScene } from "./iscene";
-import type { IEntity } from "../entity/ientity";
-import type { EntityParams } from "../entity";
 
 export class Scene implements IScene {
     private _canvas: ICanvas;
     private _looper: ILooper;
     private _input: IInput;
+    private _renderer: IRenderer;
 
     private _entities: IEntity[] = [];
 
@@ -18,6 +18,11 @@ export class Scene implements IScene {
         this._canvas = new Canvas(size);
         this._looper = new Looper();
         this._input = new Input();
+        this._renderer = new Renderer(this._canvas.getSize(), this._canvas.getContextGpu());
+    }
+
+    public async init(): Promise<void> {
+        await this._renderer.init();
     }
 
     public createEntity(params: EntityParams): IEntity {
