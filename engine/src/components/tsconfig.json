@@ -3,6 +3,8 @@
     "include": ["./**/*.ts"],
     "references": [
         { "path": "../utils" },
-        { "path": "../math" }
+        { "path": "../math" },
+        { "path": "../core" },
+        { "path": "../api"}
     ]
 }
