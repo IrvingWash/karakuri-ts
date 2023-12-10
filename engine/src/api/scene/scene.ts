@@ -1,28 +1,32 @@
-import { Canvas, type ICanvas } from "../../core/canvas";
-import { Looper, type ILooper } from "../../core/looper";
-import { Input, type IInput } from "../../core/input";
-import { Renderer, type IRenderer } from "../../core/renderer";
+import { IInput } from "../../core/input";
+import { ILooper } from "../../core/looper";
+import { IRenderer } from "../../core/renderer";
 import { Entity, type IEntity, type EntityParams } from "../entity";
-import { SceneSize } from "./scene-objects";
 import type { IScene } from "./iscene";
 
+interface SceneParams {
+    input: IInput;
+    looper: ILooper;
+    renderer: IRenderer;
+}
+
 export class Scene implements IScene {
-    private _canvas: ICanvas;
-    private _looper: ILooper;
     private _input: IInput;
+    private _looper: ILooper;
     private _renderer: IRenderer;
 
     private _entities: IEntity[] = [];
 
-    public constructor(size?: SceneSize) {
-        this._canvas = new Canvas(size);
-        this._looper = new Looper();
-        this._input = new Input();
-        this._renderer = new Renderer(this._canvas.getSize(), this._canvas.getContextGpu());
-    }
+    public constructor(params: SceneParams) {
+        const {
+            input,
+            looper,
+            renderer,
+        } = params;
 
-    public async init(): Promise<void> {
-        await this._renderer.init();
+        this._input = input;
+        this._looper = looper;
+        this._renderer = renderer;
     }
 
     public createEntity(params: EntityParams): IEntity {
@@ -54,9 +58,5 @@ export class Scene implements IScene {
 
     public pause(): void {
         this._looper.pause();
-    }
-
-    public getSize(): SceneSize {
-        return this._canvas.getSize();
     }
 }
