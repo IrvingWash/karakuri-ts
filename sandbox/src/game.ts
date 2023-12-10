@@ -17,3 +17,6 @@ scene.createEntity({
 });
 
 scene.start();
+setTimeout(() => {
+    scene.pause();
+}, 1000);
