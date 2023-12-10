@@ -24,10 +24,16 @@ export class Renderer {
             device,
             format: navigator.gpu.getPreferredCanvasFormat(),
         });
+
+        this._device.lost.then(this._onDeviceLost);
     }
 
     public test(): void {
         console.log(this._canvasSize);
         console.log(this._device);
     }
+
+    private _onDeviceLost = (info: GPUDeviceLostInfo): void => {
+        throw new Error(`GPU device lost: ${info.reason}: ${info.message}`);
+    };
 }

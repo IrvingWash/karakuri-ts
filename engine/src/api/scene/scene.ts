@@ -47,6 +47,8 @@ export class Scene implements IScene {
             for (const entity of this._entities) {
                 entity.update(deltaTime);
             }
+
+            this._renderer.test();
         });
     }
 

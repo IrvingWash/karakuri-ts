@@ -1,7 +1,5 @@
 import { type IScene, Scene, Behavior } from "karakuri";
 
-const scene: IScene = new Scene();
-
 class Player extends Behavior {
     public onStart(): void {
         console.log("Player started");
@@ -12,11 +10,17 @@ class Player extends Behavior {
     }
 }
 
-scene.createEntity({
-    behavior: new Player(),
-});
+export async function game(): Promise<void> {
+    const scene: IScene = new Scene();
 
-scene.start();
-setTimeout(() => {
-    scene.pause();
-}, 1000);
+    scene.init();
+
+    scene.createEntity({
+        behavior: new Player(),
+    });
+
+    scene.start();
+    setTimeout(() => {
+        scene.pause();
+    }, 1000);
+}
