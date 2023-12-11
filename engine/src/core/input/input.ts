@@ -1,7 +1,7 @@
 import type { IInput } from "./iinput";
 
 export class Input implements IInput {
-    private _keyStates: Record<string, boolean> = {};
+    private readonly _keyStates: Record<string, boolean> = {};
 
     public constructor() {
         window.addEventListener("keydown", (event) => this._keyStates[event.key] = true);

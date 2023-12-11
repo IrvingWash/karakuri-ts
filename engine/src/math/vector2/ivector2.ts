@@ -1,6 +1,6 @@
 export interface IVector2 {
-    x: number;
-    y: number;
+    readonly x: number;
+    readonly y: number;
 
     add(other: IVector2): IVector2;
     toAdded(other: IVector2): IVector2;

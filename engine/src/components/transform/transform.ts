@@ -8,9 +8,9 @@ export interface TransformParams {
 }
 
 export class Transform implements ITransform {
-    public position: IVector2;
-    public rotation: IVector2;
-    public scale: IVector2;
+    public readonly position: IVector2;
+    public readonly rotation: IVector2;
+    public readonly scale: IVector2;
 
     public constructor(params?: TransformParams) {
         this.position = params?.position ?? new Vector2();

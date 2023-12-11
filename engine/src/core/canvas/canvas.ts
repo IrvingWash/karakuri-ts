@@ -5,7 +5,7 @@ import { defaultCanvasSize } from "./canvas-constants";
 import type { ICanvas } from "./icanvas";
 
 export class Canvas implements ICanvas {
-    private _element: HTMLCanvasElement;
+    private readonly _element: HTMLCanvasElement;
 
     public constructor(size: CanvasSize = defaultCanvasSize) {
         this._element = this._createElement(size);

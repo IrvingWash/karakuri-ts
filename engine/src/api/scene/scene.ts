@@ -15,7 +15,7 @@ export class Scene implements IScene {
     private readonly _looper: ILooper;
     private readonly _renderer: IRenderer;
 
-    private _entities: IEntity[] = [];
+    private readonly _entities: IEntity[] = [];
 
     public constructor(params: SceneParams) {
         const {
