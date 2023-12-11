@@ -11,9 +11,9 @@ interface SceneParams {
 }
 
 export class Scene implements IScene {
-    private _input: IInput;
-    private _looper: ILooper;
-    private _renderer: IRenderer;
+    private readonly _input: IInput;
+    private readonly _looper: ILooper;
+    private readonly _renderer: IRenderer;
 
     private _entities: IEntity[] = [];
 

@@ -1,8 +1,8 @@
 import { CanvasSize } from "../canvas";
 
 export class Renderer {
-    private _canvasSize: CanvasSize;
-    private _ctx: GPUCanvasContext;
+    private readonly _canvasSize: CanvasSize;
+    private readonly _ctx: GPUCanvasContext;
     private _device!: GPUDevice;
 
     public constructor(canvasSize: CanvasSize, ctx: GPUCanvasContext) {

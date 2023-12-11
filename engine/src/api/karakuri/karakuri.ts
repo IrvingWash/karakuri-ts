@@ -7,10 +7,11 @@ import { IKarakuri } from "./ikarakuri";
 import { EngineConfiguration } from "./karakuri-objects";
 
 export class Karakuri implements IKarakuri {
-    private _canvas: ICanvas;
-    private _looper: ILooper;
-    private _input: IInput;
-    private _renderer: IRenderer;
+    private readonly _canvas: ICanvas;
+    private readonly _looper: ILooper;
+    private readonly _input: IInput;
+    private readonly _renderer: IRenderer;
+
     private _isInitialized: boolean = false;
 
     public constructor(params?: EngineConfiguration) {
