@@ -1,28 +1,30 @@
 import {
     Karakuri,
     Behavior,
-    IEntity,
     Transform,
     Vector2,
 } from "karakuri";
 
 class Player extends Behavior {
+    private _speed: number = 100;
+
     public onStart(): void {
-        console.log("Player created");
     }
 
     public onUpdate(deltaTime: number): void {
-        console.log(deltaTime);
-        console.log(this.transform.position);
-        console.log(this.input.isKeyDown("a"));
+        this._move(deltaTime);
     }
 
-    public onCollision(other: IEntity): void {
-        console.log(`Player collided with ${other}`);
-    }
+    private _move(time: number): void {
+        const left = this.input.isKeyDown("a") ? -1 : 0;
+        const right = this.input.isKeyDown("d") ? 1 : 0;
+        const up = this.input.isKeyDown("w") ? -1 : 0;
+        const down = this.input.isKeyDown("s") ? 1 : 0;
 
-    public onDestroy(): void {
-        console.log("Player destroyed");
+        this.transform.position.add(new Vector2(
+            (left || right) * this._speed * time,
+            (up || down) * this._speed * time,
+        ));
     }
 }
 
