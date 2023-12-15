@@ -1,4 +1,4 @@
-import { Canvas, type ICanvas } from "../../core/canvas";
+import { Canvas, type CanvasSize, type ICanvas } from "../../core/canvas";
 import { type IInput, Input } from "../../core/input";
 import { type ILooper, Looper } from "../../core/looper";
 import { type IRenderer, Renderer, initializeGPU } from "../../core/renderer";
@@ -28,6 +28,10 @@ export class Karakuri implements IKarakuri {
         this._renderer = new Renderer(device, ctx, viewPort);
 
         this._isInitialized = true;
+    }
+
+    public getSize(): CanvasSize {
+        return this._canvas.getSize();
     }
 
     public createScene(): IScene {
