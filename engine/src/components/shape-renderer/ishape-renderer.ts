@@ -1,11 +1,7 @@
 import { IRenderer } from "../../core/renderer";
+import { ITransform } from "../transform";
 
 export interface IShapeRenderer {
-    __init(renderer: IRenderer): void;
-
-    drawFilledRectangle(
-        x: number, y: number,
-        width: number, height: number,
-        color: [number, number, number, number],
-    ): void;
+    __init(renderer: IRenderer, transform: ITransform): void;
+    drawFilledRectangle(): void;
 }

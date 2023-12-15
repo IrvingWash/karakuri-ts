@@ -23,7 +23,7 @@ export class Entity implements IEntity {
     }
 
     public __init(input: IInput, renderer: IRenderer): void {
-        this.shapeRenderer?.__init(renderer);
+        this.shapeRenderer?.__init(renderer, this.transform);
 
         this.behavior?.__init(this.transform, input, this.shapeRenderer);
     }

@@ -51,13 +51,7 @@ export class Scene implements IScene {
             for (const entity of this._entities) {
                 entity.update(deltaTime);
 
-                entity.shapeRenderer?.drawFilledRectangle(
-                    entity.transform.position.x,
-                    entity.transform.position.y,
-                    100,
-                    100,
-                    [0, 1, 0, 1],
-                );
+                entity.shapeRenderer?.drawFilledRectangle();
             }
         });
     }
