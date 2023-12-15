@@ -1,17 +1,18 @@
+import { RGBA } from "../../core/objects";
 import { type IRenderer } from "../../core/renderer";
 import { ITransform } from "../transform";
 import { type IShapeRenderer } from "./ishape-renderer";
 import { filledMonochromeShapeShader } from "./shaders/filled-monochrome-shape-shader.ts";
 
 export class ShapeRenderer implements IShapeRenderer {
-    private _color: [number, number, number, number];
+    private _color: RGBA;
     private _transform!: ITransform;
     private _renderer!: IRenderer;
 
     private _filledRectanglePipeline: GPURenderPipeline | null = null;
     private _quadIndexBuffer: GPUBuffer | null = null;
 
-    public constructor(color: [number, number, number, number]) {
+    public constructor(color: RGBA) {
         this._color = color;
     }
 

@@ -28,7 +28,7 @@ class MovableObject extends Behavior {
 }
 
 export async function game(): Promise<void> {
-    const engine = new Karakuri();
+    const engine = new Karakuri({ clearColor: [0, 0, 0, 1] });
     await engine.init();
 
     const level = engine.createScene();

@@ -1,3 +1,4 @@
+import { RGBA } from "../../core/objects";
 import { IRenderer } from "../../core/renderer";
 import { ITransform } from "../transform";
 import { ISpriteRenderer } from "./isprite-renderer";
@@ -5,7 +6,7 @@ import { spriteShader } from "./shaders/sprite-shader";
 
 export class SpriteRenderer implements ISpriteRenderer {
     private readonly _path: string;
-    private readonly _color: [number, number, number, number];
+    private readonly _color: RGBA;
 
     private _renderer!: IRenderer;
     private _transform!: ITransform;
@@ -16,7 +17,7 @@ export class SpriteRenderer implements ISpriteRenderer {
     private _pipeline!: GPURenderPipeline;
     private _quadIndexBuffer!: GPUBuffer;
 
-    public constructor(path: string, color: [number, number, number, number] = [1, 1, 1, 1]) {
+    public constructor(path: string, color: RGBA = [1, 1, 1, 1]) {
         this._path = path;
         this._color = color;
     }

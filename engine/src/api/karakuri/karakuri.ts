@@ -1,6 +1,7 @@
 import { Canvas, type CanvasSize, type ICanvas } from "../../core/canvas";
 import { type IInput, Input } from "../../core/input";
 import { type ILooper, Looper } from "../../core/looper";
+import { type RGBA } from "../../core/objects";
 import { type IRenderer, Renderer, initializeGPU } from "../../core/renderer";
 import { ViewPort } from "../../core/renderer/view-port";
 import { type IScene, Scene } from "../scene";
@@ -13,19 +14,23 @@ export class Karakuri implements IKarakuri {
     private readonly _input: IInput;
     private _renderer!: IRenderer;
 
+    private _clearColor: RGBA;
+
     private _isInitialized: boolean = false;
 
     public constructor(params?: EngineConfiguration) {
         this._canvas = new Canvas(params?.canvasSize);
         this._looper = new Looper();
         this._input = new Input();
+
+        this._clearColor = params?.clearColor ?? [1, 1, 1, 1];
     }
 
     public async init(): Promise<void> {
         const [device, ctx] = await initializeGPU(this._canvas.getContextGpu());
         const viewPort = new ViewPort(this._canvas.getSize());
 
-        this._renderer = new Renderer(device, ctx, viewPort);
+        this._renderer = new Renderer(device, ctx, viewPort, this._clearColor);
 
         this._isInitialized = true;
     }

@@ -1,20 +1,23 @@
+import { RGBA } from "../../objects";
 import { type IViewPort } from "../view-port";
 import { IRenderer } from "./irenderer";
 
 export class Renderer implements IRenderer {
     public readonly device: GPUDevice;
     public readonly viewPortBindGroupLayout: GPUBindGroupLayout;
-    private readonly _ctx: GPUCanvasContext;
 
+    private readonly _ctx: GPUCanvasContext;
     private readonly _viewPort: IViewPort;
+    private readonly _clearColor: RGBA;
 
     private _commandEncoder: GPUCommandEncoder | null = null;
     private _renderPassEncoder: GPURenderPassEncoder | null = null;
 
-    public constructor(device: GPUDevice, ctx: GPUCanvasContext, viewPort: IViewPort) {
+    public constructor(device: GPUDevice, ctx: GPUCanvasContext, viewPort: IViewPort, clearColor: RGBA) {
         this.device = device;
         this._ctx = ctx;
         this._viewPort = viewPort;
+        this._clearColor = clearColor;
 
         this.viewPortBindGroupLayout = this.device.createBindGroupLayout({
             label: "View port bind group layout",
@@ -41,7 +44,8 @@ export class Renderer implements IRenderer {
         );
 
         this._renderPassEncoder.setIndexBuffer(indexBuffer, "uint16");
-        this._renderPassEncoder.setBindGroup(0, this._alignToViewPort()); // TODO: this sucks. Need to do this in the components
+
+        this._renderPassEncoder.setBindGroup(0, this._alignToViewPort());
 
         for (const [id, bindGroup] of bindGroups.entries()) {
             this._renderPassEncoder.setBindGroup(id + 1, bindGroup);
@@ -55,7 +59,7 @@ export class Renderer implements IRenderer {
             label: "Filled rectangle drawing command encoder",
         });
 
-        this._renderPassEncoder = this._createRenderPassEncoder(this._commandEncoder, [1, 1, 1, 1]);
+        this._renderPassEncoder = this._createRenderPassEncoder(this._commandEncoder, this._clearColor);
     }
 
     public finishDrawing(): void {
@@ -105,7 +109,7 @@ export class Renderer implements IRenderer {
 
     private _createRenderPassEncoder(
         commandEncoder: GPUCommandEncoder,
-        clearValue: [number, number, number, number],
+        clearValue: RGBA,
         label?: string,
     ): GPURenderPassEncoder {
         return commandEncoder.beginRenderPass({
