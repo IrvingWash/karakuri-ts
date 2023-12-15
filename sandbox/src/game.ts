@@ -34,7 +34,7 @@ export async function game(): Promise<void> {
 
     level.createEntity({
         transform: new Transform({
-            position: new Vector2(0, 0),
+            position: new Vector2(300, 300),
         }),
         behavior: new Player(),
     });

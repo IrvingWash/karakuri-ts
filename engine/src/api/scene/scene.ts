@@ -54,8 +54,8 @@ export class Scene implements IScene {
                 this._shapeRenderer.drawFilledRectangle(
                     entity.transform.position.x,
                     entity.transform.position.y,
-                    1,
-                    1,
+                    100,
+                    100,
                     [0, 1, 0, 1],
                 );
             }

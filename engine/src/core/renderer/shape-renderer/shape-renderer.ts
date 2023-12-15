@@ -1,22 +1,29 @@
 import { CanvasSize } from "../../canvas";
+import { createBuffer } from "../renderer-uitls";
+import { type IViewPort, ViewPort } from "../view-port";
 import { IShapeRenderer } from "./ishape-renderer";
-import { filledRectangleShader } from "./shaders/filled-rectangle-shader";
+import { filledMonochromeShapeShader } from "./shaders/filled-monochrome-shape-shader.ts";
 
 export class ShapeRenderer implements IShapeRenderer {
     private readonly _canvasSize: CanvasSize;
-    private _device: GPUDevice;
-    private _ctx: GPUCanvasContext;
+    private readonly _device: GPUDevice;
+    private readonly _ctx: GPUCanvasContext;
 
-    private _quadIndexBuffer: GPUBuffer;
+    private readonly _viewPort: IViewPort;
 
-    private _filledRectanglePipeline: GPURenderPipeline;
+    private readonly _quadIndexBuffer: GPUBuffer;
+
+    private readonly _filledRectanglePipeline: GPURenderPipeline;
 
     public constructor(device: GPUDevice, ctx: GPUCanvasContext, canvasSize: CanvasSize) {
         this._device = device;
         this._ctx = ctx;
         this._canvasSize = canvasSize;
 
-        this._quadIndexBuffer = this._createBuffer(
+        this._viewPort = new ViewPort(this._canvasSize, this._device);
+
+        this._quadIndexBuffer = createBuffer(
+            this._device,
             new Uint16Array([
                 0, 1, 2,
                 2, 3, 0,
@@ -25,8 +32,6 @@ export class ShapeRenderer implements IShapeRenderer {
         );
 
         this._filledRectanglePipeline = this._createFilledRectanglePipeline();
-
-        console.log(this._canvasSize);
     }
 
     public drawFilledRectangle(
@@ -44,6 +49,7 @@ export class ShapeRenderer implements IShapeRenderer {
         const halfHeight = height * 0.5;
 
         const vertexData = [
+            // TODO: unuptimal spread operator here
             (x + halfWidth), (y + halfHeight), ...color, // top right
             (x + halfWidth), (y - halfHeight), ...color, // bottom right
             (x - halfWidth), (y - halfHeight), ...color, // bottom left
@@ -51,8 +57,9 @@ export class ShapeRenderer implements IShapeRenderer {
         ];
 
         renderPassEncoder.setPipeline(this._filledRectanglePipeline);
-        renderPassEncoder.setVertexBuffer(0, this._createBuffer(new Float32Array(vertexData), GPUBufferUsage.VERTEX));
+        renderPassEncoder.setVertexBuffer(0, createBuffer(this._device, new Float32Array(vertexData), GPUBufferUsage.VERTEX));
         renderPassEncoder.setIndexBuffer(this._quadIndexBuffer, "uint16");
+        renderPassEncoder.setBindGroup(0, this._viewPort.bindGroup);
         renderPassEncoder.drawIndexed(6);
 
         renderPassEncoder.end();
@@ -62,12 +69,17 @@ export class ShapeRenderer implements IShapeRenderer {
 
     private _createFilledRectanglePipeline(): GPURenderPipeline {
         const shaderModule = this._device.createShaderModule({
-            label: "Filled Rectangle Shader",
-            code: filledRectangleShader,
+            label: "Filled rectangle shader",
+            code: filledMonochromeShapeShader,
         });
 
         return this._device.createRenderPipeline({
-            layout: "auto",
+            layout: this._device.createPipelineLayout({
+                label: "Filled rectangle pipeline layout",
+                bindGroupLayouts: [
+                    this._viewPort.bindGroupLayout,
+                ],
+            }),
             primitive: {
                 topology: "triangle-list",
             },
@@ -115,17 +127,5 @@ export class ShapeRenderer implements IShapeRenderer {
                 clearValue,
             }],
         });
-    }
-
-    private _createBuffer(data: Float32Array | Uint16Array, type: GPUFlagsConstant, label?: string): GPUBuffer {
-        const buffer = this._device.createBuffer({
-            size: data.byteLength,
-            label,
-            usage: type | GPUBufferUsage.COPY_DST,
-        });
-
-        this._device.queue.writeBuffer(buffer, 0, data);
-
-        return buffer;
     }
 }
