@@ -1,16 +1,16 @@
-import { Canvas, ICanvas } from "../../core/canvas";
-import { IInput, Input } from "../../core/input";
-import { ILooper, Looper } from "../../core/looper";
-import { IRenderer, Renderer } from "../../core/renderer";
-import { IScene, Scene } from "../scene";
-import { IKarakuri } from "./ikarakuri";
+import { Canvas, type ICanvas } from "../../core/canvas";
+import { type IInput, Input } from "../../core/input";
+import { type ILooper, Looper } from "../../core/looper";
+import { type IShapeRenderer, ShapeRenderer, initializeGPU } from "../../core/renderer";
+import { type IScene, Scene } from "../scene";
+import type { IKarakuri } from "./ikarakuri";
 import { EngineConfiguration } from "./karakuri-objects";
 
 export class Karakuri implements IKarakuri {
     private readonly _canvas: ICanvas;
     private readonly _looper: ILooper;
     private readonly _input: IInput;
-    private readonly _renderer: IRenderer;
+    private _shapeRenderer!: IShapeRenderer;
 
     private _isInitialized: boolean = false;
 
@@ -18,15 +18,12 @@ export class Karakuri implements IKarakuri {
         this._canvas = new Canvas(params?.canvasSize);
         this._looper = new Looper();
         this._input = new Input();
-
-        this._renderer = new Renderer(
-            this._canvas.getSize(),
-            this._canvas.getContextGpu(),
-        );
     }
 
     public async init(): Promise<void> {
-        await this._renderer.init();
+        const [device, ctx] = await initializeGPU(this._canvas.getContextGpu());
+
+        this._shapeRenderer = new ShapeRenderer(device, ctx, this._canvas.getSize());
 
         this._isInitialized = true;
     }
@@ -38,7 +35,7 @@ export class Karakuri implements IKarakuri {
 
         return new Scene({
             input: this._input,
-            renderer: this._renderer,
+            shapeRenderer: this._shapeRenderer,
             looper: this._looper,
         });
     }
