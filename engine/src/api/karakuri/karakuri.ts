@@ -14,7 +14,7 @@ export class Karakuri implements IKarakuri {
     private readonly _input: IInput;
     private _renderer!: IRenderer;
 
-    private _clearColor: RGBA;
+    private readonly _clearColor: RGBA;
 
     private _isInitialized: boolean = false;
 
