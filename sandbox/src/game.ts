@@ -35,7 +35,7 @@ export async function game(): Promise<void> {
     level.createEntity({
         transform: new Transform({
             position: new Vector2(0, 0),
-            scale: new Vector2(100, 100),
+            scale: new Vector2(50, 50),
         }),
         behavior: new MovableObject(),
         shapeRenderer: new ShapeRenderer([1, 0, 0, 1]),
@@ -43,11 +43,20 @@ export async function game(): Promise<void> {
 
     level.createEntity({
         transform: new Transform({
-            position: new Vector2(300, 300),
+            position: new Vector2(100, 100),
             scale: new Vector2(50, 50),
         }),
         behavior: new MovableObject(),
-        shapeRenderer: new ShapeRenderer([1, 0, 0, 1]),
+        shapeRenderer: new ShapeRenderer([0, 1, 0, 1]),
+    });
+
+    level.createEntity({
+        transform: new Transform({
+            position: new Vector2(200, 200),
+            scale: new Vector2(50, 50),
+        }),
+        behavior: new MovableObject(),
+        shapeRenderer: new ShapeRenderer([0, 0, 1, 1]),
     });
 
     level.start();
