@@ -28,7 +28,7 @@ export class Renderer implements IRenderer {
         });
     }
 
-    public queueDraw(pipeline: GPURenderPipeline, vertices: number[], indexBuffer: GPUBuffer): void {
+    public queueDraw(pipeline: GPURenderPipeline, vertices: number[], indexBuffer: GPUBuffer, bindGroups: GPUBindGroup[] = []): void {
         if (this._renderPassEncoder === null || this._commandEncoder === null) {
             return;
         }
@@ -41,7 +41,12 @@ export class Renderer implements IRenderer {
         );
 
         this._renderPassEncoder.setIndexBuffer(indexBuffer, "uint16");
-        this._renderPassEncoder.setBindGroup(0, this._alignToViewPort());
+        this._renderPassEncoder.setBindGroup(0, this._alignToViewPort()); // TODO: this sucks. Need to do this in the components
+
+        for (const [id, bindGroup] of bindGroups.entries()) {
+            this._renderPassEncoder.setBindGroup(id + 1, bindGroup);
+        }
+
         this._renderPassEncoder.drawIndexed(6);
     }
 

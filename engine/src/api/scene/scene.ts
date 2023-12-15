@@ -29,10 +29,10 @@ export class Scene implements IScene {
         this._renderer = renderer;
     }
 
-    public createEntity(params: EntityParams): IEntity {
+    public async createEntity(params: EntityParams): Promise<IEntity> {
         const entity: IEntity = new Entity(params);
 
-        entity.__init(this._input, this._renderer);
+        await entity.__init(this._input, this._renderer);
         entity.start();
 
         this._entities.push(entity);
@@ -54,7 +54,8 @@ export class Scene implements IScene {
 
             this._renderer.beginDrawing();
             for (const entity of this._entities) {
-                entity.shapeRenderer?.drawFilledRectangle();
+                entity.shapeRenderer?.draw();
+                entity.spriteRenderer?.draw();
             }
             this._renderer.finishDrawing();
         });

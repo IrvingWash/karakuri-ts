@@ -4,7 +4,7 @@ export interface IRenderer {
 
     beginDrawing(): void;
     finishDrawing(): void;
-    queueDraw(pipeline: GPURenderPipeline, vertices: number[], indexBuffer: GPUBuffer): void;
+    queueDraw(pipeline: GPURenderPipeline, vertices: number[], indexBuffer: GPUBuffer, bindGroups?: GPUBindGroup[]): void;
 
     createBuffer(
         data: Float32Array | Uint16Array,

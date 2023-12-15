@@ -20,7 +20,7 @@ export class ShapeRenderer implements IShapeRenderer {
         this._transform = transform;
     }
 
-    public drawFilledRectangle(): void {
+    public draw(): void {
         if (this._filledRectanglePipeline === null) {
             this._filledRectanglePipeline = this._createFilledRectangleRenderPipeline();
         }
