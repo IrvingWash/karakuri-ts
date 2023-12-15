@@ -65,7 +65,7 @@ export async function game(): Promise<void> {
             position: new Vector2(300, 300),
         }),
         behavior: new MovableObject(),
-        spriteRenderer: new SpriteRenderer("assets/ship-blue.png"),
+        spriteRenderer: new SpriteRenderer({ path: "assets/ship-blue.png" }),
     });
 
     await level.createEntity({
@@ -74,7 +74,7 @@ export async function game(): Promise<void> {
             scale: new Vector2(0.5, 2),
         }),
         behavior: new MovableObject(),
-        spriteRenderer: new SpriteRenderer("assets/ship-blue.png"),
+        spriteRenderer: new SpriteRenderer({ path: "assets/ship-blue.png" }),
     });
 
     await level.createEntity({
@@ -82,7 +82,7 @@ export async function game(): Promise<void> {
             position: new Vector2(330, 330),
         }),
         behavior: new MovableObject(),
-        spriteRenderer: new SpriteRenderer("assets/circle.png", [1, 0, 0, 1]),
+        spriteRenderer: new SpriteRenderer({ path: "assets/circle.png", color: [1, 0, 0, 1] }),
     });
 
     level.start();
