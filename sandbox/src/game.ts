@@ -7,7 +7,7 @@ import {
 } from "karakuri";
 
 class MovableObject extends Behavior {
-    private _speed: number = 100;
+    private _speed: number = 500;
 
     public onUpdate(deltaTime: number): void {
         this._move(deltaTime);
@@ -34,8 +34,8 @@ export async function game(): Promise<void> {
 
     level.createEntity({
         transform: new Transform({
-            position: new Vector2(100, 100),
-            scale: new Vector2(50, 50),
+            position: new Vector2(0, 0),
+            scale: new Vector2(100, 100),
         }),
         behavior: new MovableObject(),
         shapeRenderer: new ShapeRenderer([1, 0, 0, 1]),
