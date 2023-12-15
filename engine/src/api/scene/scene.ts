@@ -1,19 +1,19 @@
 import type { IInput } from "../../core/input";
 import type { ILooper } from "../../core/looper";
-import type { IShapeRenderer } from "../../core/renderer";
+import type { IRenderer } from "../../core/renderer";
 import { Entity, type IEntity, type EntityParams } from "../entity";
 import type { IScene } from "./iscene";
 
 interface SceneParams {
     input: IInput;
     looper: ILooper;
-    shapeRenderer: IShapeRenderer;
+    renderer: IRenderer;
 }
 
 export class Scene implements IScene {
     private readonly _input: IInput;
     private readonly _looper: ILooper;
-    private readonly _shapeRenderer: IShapeRenderer;
+    private readonly _renderer: IRenderer;
 
     private readonly _entities: IEntity[] = [];
 
@@ -21,12 +21,12 @@ export class Scene implements IScene {
         const {
             input,
             looper,
-            shapeRenderer,
+            renderer,
         } = params;
 
         this._input = input;
         this._looper = looper;
-        this._shapeRenderer = shapeRenderer;
+        this._renderer = renderer;
     }
 
     public createEntity(params: EntityParams): IEntity {
@@ -51,7 +51,7 @@ export class Scene implements IScene {
             for (const entity of this._entities) {
                 entity.update(deltaTime);
 
-                this._shapeRenderer.drawFilledRectangle(
+                this._renderer.drawFilledRectangle(
                     entity.transform.position.x,
                     entity.transform.position.y,
                     100,

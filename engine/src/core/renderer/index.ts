@@ -1,4 +1,4 @@
-export type { IShapeRenderer } from "./shape-renderer/ishape-renderer";
-export { ShapeRenderer } from "./shape-renderer/shape-renderer";
+export type { IRenderer } from "./renderer/irenderer";
+export { Renderer } from "./renderer/renderer";
 
 export { initializeGPU } from "./gpu-initializer";

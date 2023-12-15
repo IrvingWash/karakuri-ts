@@ -1,4 +1,4 @@
-export interface IShapeRenderer {
+export interface IRenderer {
     drawFilledRectangle(
         x: number, y: number,
         width: number, height: number,

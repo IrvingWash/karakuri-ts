@@ -1,4 +1,6 @@
-export class Matrix4 {
+import { IMatrix4 } from "./imatrix";
+
+export class Matrix4 implements IMatrix4 {
     public readonly values = new Float32Array(16);
 
     public constructor() {}
@@ -10,7 +12,7 @@ export class Matrix4 {
         top: number,
         near: number,
         far: number,
-    ): Matrix4 {
+    ): IMatrix4 {
         const leftRight = 1 / (left - right);
         const bottomTop = 1 / (bottom - top);
         const nearFar = 1 / (near - far);

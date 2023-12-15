@@ -1,4 +1,5 @@
+import { IMatrix4 } from "../../../math/matrix";
+
 export interface IViewPort {
-    readonly bindGroupLayout: GPUBindGroupLayout,
-    readonly bindGroup: GPUBindGroup;
+    readonly projectionMatrix: IMatrix4;
 }

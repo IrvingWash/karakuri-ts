@@ -1,26 +1,34 @@
-import { CanvasSize } from "../../canvas";
 import { createBuffer } from "../renderer-uitls";
-import { type IViewPort, ViewPort } from "../view-port";
-import { IShapeRenderer } from "./ishape-renderer";
+import { type IViewPort } from "../view-port";
+import { IRenderer } from "./irenderer";
 import { filledMonochromeShapeShader } from "./shaders/filled-monochrome-shape-shader.ts";
 
-export class ShapeRenderer implements IShapeRenderer {
-    private readonly _canvasSize: CanvasSize;
+export class Renderer implements IRenderer {
     private readonly _device: GPUDevice;
     private readonly _ctx: GPUCanvasContext;
-
     private readonly _viewPort: IViewPort;
+
+    private readonly _viewPortBindGroupLayout: GPUBindGroupLayout;
 
     private readonly _quadIndexBuffer: GPUBuffer;
 
     private readonly _filledRectanglePipeline: GPURenderPipeline;
 
-    public constructor(device: GPUDevice, ctx: GPUCanvasContext, canvasSize: CanvasSize) {
+    public constructor(device: GPUDevice, ctx: GPUCanvasContext, viewPort: IViewPort) {
         this._device = device;
         this._ctx = ctx;
-        this._canvasSize = canvasSize;
+        this._viewPort = viewPort;
 
-        this._viewPort = new ViewPort(this._canvasSize, this._device);
+        this._viewPortBindGroupLayout = this._device.createBindGroupLayout({
+            label: "View port bind group layout",
+            entries: [{
+                binding: 0,
+                visibility: GPUShaderStage.VERTEX,
+                buffer: {
+                    type: "uniform",
+                },
+            }],
+        });
 
         this._quadIndexBuffer = createBuffer(
             this._device,
@@ -32,6 +40,26 @@ export class ShapeRenderer implements IShapeRenderer {
         );
 
         this._filledRectanglePipeline = this._createFilledRectanglePipeline();
+    }
+
+    private _alignToViewPort(): GPUBindGroup {
+        const buffer = createBuffer(
+            this._device,
+            this._viewPort.projectionMatrix.values,
+            GPUBufferUsage.UNIFORM,
+            "Viewport uniform buffer",
+        );
+
+        return this._device.createBindGroup({
+            label: "View port bind group",
+            layout: this._viewPortBindGroupLayout,
+            entries: [{
+                binding: 0,
+                resource: {
+                    buffer,
+                },
+            }],
+        });
     }
 
     public drawFilledRectangle(
@@ -49,7 +77,7 @@ export class ShapeRenderer implements IShapeRenderer {
         const halfHeight = height * 0.5;
 
         const vertexData = [
-            // TODO: unuptimal spread operator here
+            // TODO: unoptimal spread operator here
             (x + halfWidth), (y + halfHeight), ...color, // top right
             (x + halfWidth), (y - halfHeight), ...color, // bottom right
             (x - halfWidth), (y - halfHeight), ...color, // bottom left
@@ -59,7 +87,7 @@ export class ShapeRenderer implements IShapeRenderer {
         renderPassEncoder.setPipeline(this._filledRectanglePipeline);
         renderPassEncoder.setVertexBuffer(0, createBuffer(this._device, new Float32Array(vertexData), GPUBufferUsage.VERTEX));
         renderPassEncoder.setIndexBuffer(this._quadIndexBuffer, "uint16");
-        renderPassEncoder.setBindGroup(0, this._viewPort.bindGroup);
+        renderPassEncoder.setBindGroup(0, this._alignToViewPort());
         renderPassEncoder.drawIndexed(6);
 
         renderPassEncoder.end();
@@ -77,7 +105,7 @@ export class ShapeRenderer implements IShapeRenderer {
             layout: this._device.createPipelineLayout({
                 label: "Filled rectangle pipeline layout",
                 bindGroupLayouts: [
-                    this._viewPort.bindGroupLayout,
+                    this._viewPortBindGroupLayout,
                 ],
             }),
             primitive: {
