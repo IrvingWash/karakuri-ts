@@ -7,6 +7,8 @@ import {
     SpriteRenderer,
 } from "karakuri";
 
+import circleSprite from "../assets/circle.png";
+
 class MovableObject extends Behavior {
     private _speed: number = 500;
 
@@ -82,7 +84,7 @@ export async function game(): Promise<void> {
             position: new Vector2(330, 330),
         }),
         behavior: new MovableObject(),
-        spriteRenderer: new SpriteRenderer({ path: "assets/circle.png", color: [1, 0, 0, 1] }),
+        spriteRenderer: new SpriteRenderer({ path: circleSprite, color: [1, 0, 0, 1] }),
     });
 
     level.start();
