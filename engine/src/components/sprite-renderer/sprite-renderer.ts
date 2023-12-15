@@ -4,9 +4,16 @@ import { ITransform } from "../transform";
 import { ISpriteRenderer } from "./isprite-renderer";
 import { spriteShader } from "./shaders/sprite-shader";
 
+interface SpriteRendererParams {
+    path: string;
+    color?: RGBA;
+    antialias?: boolean;
+}
+
 export class SpriteRenderer implements ISpriteRenderer {
     private readonly _path: string;
     private readonly _color: RGBA;
+    private readonly _antialias: boolean;
 
     private _renderer!: IRenderer;
     private _transform!: ITransform;
@@ -17,9 +24,10 @@ export class SpriteRenderer implements ISpriteRenderer {
     private _pipeline!: GPURenderPipeline;
     private _quadIndexBuffer!: GPUBuffer;
 
-    public constructor(path: string, color: RGBA = [1, 1, 1, 1]) {
-        this._path = path;
-        this._color = color;
+    public constructor(params: SpriteRendererParams) {
+        this._path = params.path;
+        this._color = params.color ?? [1, 1, 1, 1];
+        this._antialias = params.antialias ?? false;
     }
 
     public async __init(renderer: IRenderer, transform: ITransform): Promise<void> {
@@ -82,9 +90,11 @@ export class SpriteRenderer implements ISpriteRenderer {
             { width: image.width, height: image.height },
         );
 
+        const filterMode: GPUFilterMode = this._antialias ? "linear" : "nearest";
+
         this._sampler = this._renderer.device.createSampler({
-            magFilter: "linear",
-            minFilter: "linear",
+            magFilter: filterMode,
+            minFilter: filterMode,
         });
     }
 
