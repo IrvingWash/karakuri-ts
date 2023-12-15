@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@jest/globals";
 
-import { Trigonometry } from "../../src/math/trigonometry";
+import { Trigonometry } from "../../../src/math/trigonometry";
 
 describe("Trigonometry", () => {
     const degrees = 90;
