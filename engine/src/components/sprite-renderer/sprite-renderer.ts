@@ -5,6 +5,7 @@ import { spriteShader } from "./shaders/sprite-shader";
 
 export class SpriteRenderer implements ISpriteRenderer {
     private readonly _path: string;
+    private readonly _color: [number, number, number, number];
 
     private _renderer!: IRenderer;
     private _transform!: ITransform;
@@ -15,8 +16,9 @@ export class SpriteRenderer implements ISpriteRenderer {
     private _pipeline!: GPURenderPipeline;
     private _quadIndexBuffer!: GPUBuffer;
 
-    public constructor(path: string) {
+    public constructor(path: string, color: [number, number, number, number] = [1, 1, 1, 1]) {
         this._path = path;
+        this._color = color;
     }
 
     public async __init(renderer: IRenderer, transform: ITransform): Promise<void> {
@@ -38,10 +40,10 @@ export class SpriteRenderer implements ISpriteRenderer {
         const halfHeight = height * 0.5;
 
         const vertices = [
-            (x + halfWidth), (y + halfHeight), 1, 1, // top right
-            (x + halfWidth), (y - halfHeight), 1, 0, // bottom right
-            (x - halfWidth), (y - halfHeight), 0, 0, // bottom left
-            (x - halfWidth), (y + halfHeight), 0, 1, // top left
+            (x + halfWidth), (y + halfHeight), 1, 1, ...this._color, // top right
+            (x + halfWidth), (y - halfHeight), 1, 0, ...this._color, // bottom right
+            (x - halfWidth), (y - halfHeight), 0, 0, ...this._color, // bottom left
+            (x - halfWidth), (y + halfHeight), 0, 1, ...this._color, // top left
         ];
 
         this._renderer.queueDraw(
@@ -92,7 +94,7 @@ export class SpriteRenderer implements ISpriteRenderer {
         });
 
         const vertexBufferLayout: GPUVertexBufferLayout = {
-            arrayStride: 4 * Float32Array.BYTES_PER_ELEMENT,
+            arrayStride: 8 * Float32Array.BYTES_PER_ELEMENT,
             attributes: [
                 {
                     shaderLocation: 0,
@@ -103,6 +105,11 @@ export class SpriteRenderer implements ISpriteRenderer {
                     shaderLocation: 1,
                     offset: 2 * Float32Array.BYTES_PER_ELEMENT,
                     format: "float32x2",
+                },
+                {
+                    shaderLocation: 2,
+                    offset: 4 * Float32Array.BYTES_PER_ELEMENT,
+                    format: "float32x4",
                 },
             ],
             stepMode: "vertex",

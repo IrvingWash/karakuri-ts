@@ -77,5 +77,13 @@ export async function game(): Promise<void> {
         spriteRenderer: new SpriteRenderer("assets/ship-blue.png"),
     });
 
+    await level.createEntity({
+        transform: new Transform({
+            position: new Vector2(330, 330),
+        }),
+        behavior: new MovableObject(),
+        spriteRenderer: new SpriteRenderer("assets/circle.png", [1, 0, 0, 1]),
+    });
+
     level.start();
 }

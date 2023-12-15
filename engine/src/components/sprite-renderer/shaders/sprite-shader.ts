@@ -2,6 +2,7 @@ export const spriteShader = `
     struct VertexOut {
         @builtin(position) position: vec4f,
         @location(0) textureCoordinates: vec2f,
+        @location(1) color: vec4f,
     }
 
     @group(0) @binding(0)
@@ -11,11 +12,13 @@ export const spriteShader = `
     fn vs_main(
         @location(0) pos: vec2f,
         @location(1) textureCoordinates: vec2f,
+        @location(2) color: vec4f,
     ) -> VertexOut {
         var output: VertexOut;
 
         output.position = projectionMatrix * vec4f(pos, 0, 1);
         output.textureCoordinates = textureCoordinates;
+        output.color = color;
 
         return output;
     }
@@ -30,6 +33,6 @@ export const spriteShader = `
     fn fs_main(frag_data: VertexOut) -> @location(0) vec4f {
         var textureColor = textureSample(tex, texSampler, frag_data.textureCoordinates);
 
-        return textureColor;
+        return frag_data.color * textureColor;
     }
 `;
