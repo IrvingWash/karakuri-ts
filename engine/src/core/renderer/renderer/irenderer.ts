@@ -1,7 +1,12 @@
 export interface IRenderer {
-    drawFilledRectangle(
-        x: number, y: number,
-        width: number, height: number,
-        color: [number, number, number, number]
-    ): void;
+    readonly device: GPUDevice;
+    readonly viewPortBindGroupLayout: GPUBindGroupLayout;
+
+    draw(pipeline: GPURenderPipeline, vertices: number[], indexBuffer: GPUBuffer): void;
+
+    createBuffer(
+        data: Float32Array | Uint16Array,
+        type: GPUFlagsConstant,
+        label?: string,
+    ): GPUBuffer;
 }

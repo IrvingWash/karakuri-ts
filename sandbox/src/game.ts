@@ -3,13 +3,11 @@ import {
     Behavior,
     Transform,
     Vector2,
+    ShapeRenderer,
 } from "karakuri";
 
 class Player extends Behavior {
     private _speed: number = 100;
-
-    public onStart(): void {
-    }
 
     public onUpdate(deltaTime: number): void {
         this._move(deltaTime);
@@ -39,6 +37,7 @@ export async function game(): Promise<void> {
             position: new Vector2(300, 300),
         }),
         behavior: new Player(),
+        shapeRenderer: new ShapeRenderer(),
     });
 
     level.start();

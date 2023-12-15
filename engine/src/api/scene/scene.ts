@@ -32,7 +32,7 @@ export class Scene implements IScene {
     public createEntity(params: EntityParams): IEntity {
         const entity: IEntity = new Entity(params);
 
-        entity.__init(this._input);
+        entity.__init(this._input, this._renderer);
         entity.start();
 
         this._entities.push(entity);
@@ -51,7 +51,7 @@ export class Scene implements IScene {
             for (const entity of this._entities) {
                 entity.update(deltaTime);
 
-                this._renderer.drawFilledRectangle(
+                entity.shapeRenderer?.drawFilledRectangle(
                     entity.transform.position.x,
                     entity.transform.position.y,
                     100,
