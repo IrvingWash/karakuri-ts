@@ -50,9 +50,13 @@ export class Scene implements IScene {
         this._looper.start((deltaTime) => {
             for (const entity of this._entities) {
                 entity.update(deltaTime);
+            }
 
+            this._renderer.beginDrawing();
+            for (const entity of this._entities) {
                 entity.shapeRenderer?.drawFilledRectangle();
             }
+            this._renderer.finishDrawing();
         });
     }
 

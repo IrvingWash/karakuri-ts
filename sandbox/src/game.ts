@@ -6,7 +6,7 @@ import {
     ShapeRenderer,
 } from "karakuri";
 
-class Player extends Behavior {
+class MovableObject extends Behavior {
     private _speed: number = 100;
 
     public onUpdate(deltaTime: number): void {
@@ -34,10 +34,19 @@ export async function game(): Promise<void> {
 
     level.createEntity({
         transform: new Transform({
-            position: new Vector2(300, 300),
-            scale: new Vector2(100, 100),
+            position: new Vector2(100, 100),
+            scale: new Vector2(50, 50),
         }),
-        behavior: new Player(),
+        behavior: new MovableObject(),
+        shapeRenderer: new ShapeRenderer([1, 0, 0, 1]),
+    });
+
+    level.createEntity({
+        transform: new Transform({
+            position: new Vector2(300, 300),
+            scale: new Vector2(50, 50),
+        }),
+        behavior: new MovableObject(),
         shapeRenderer: new ShapeRenderer([1, 0, 0, 1]),
     });
 

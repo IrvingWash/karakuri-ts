@@ -4,9 +4,12 @@ import { IRenderer } from "./irenderer";
 export class Renderer implements IRenderer {
     public readonly device: GPUDevice;
     public readonly viewPortBindGroupLayout: GPUBindGroupLayout;
-
     private readonly _ctx: GPUCanvasContext;
+
     private readonly _viewPort: IViewPort;
+
+    private _commandEncoder: GPUCommandEncoder | null = null;
+    private _renderPassEncoder: GPURenderPassEncoder | null = null;
 
     public constructor(device: GPUDevice, ctx: GPUCanvasContext, viewPort: IViewPort) {
         this.device = device;
@@ -25,27 +28,39 @@ export class Renderer implements IRenderer {
         });
     }
 
-    public draw(pipeline: GPURenderPipeline, vertices: number[], indexBuffer: GPUBuffer): void {
-        const commandEncoder = this.device.createCommandEncoder({
-            label: "Filled rectangle drawing command encoder",
-        });
+    public queueDraw(pipeline: GPURenderPipeline, vertices: number[], indexBuffer: GPUBuffer): void {
+        if (this._renderPassEncoder === null || this._commandEncoder === null) {
+            return;
+        }
 
-        const renderPassEncoder = this._createRenderPassEncoder(commandEncoder, [1, 1, 1, 1]);
+        this._renderPassEncoder.setPipeline(pipeline);
 
-        renderPassEncoder.setPipeline(pipeline);
-
-        renderPassEncoder.setVertexBuffer(
+        this._renderPassEncoder.setVertexBuffer(
             0,
             this.createBuffer(new Float32Array(vertices), GPUBufferUsage.VERTEX),
         );
 
-        renderPassEncoder.setIndexBuffer(indexBuffer, "uint16");
-        renderPassEncoder.setBindGroup(0, this._alignToViewPort());
-        renderPassEncoder.drawIndexed(6);
+        this._renderPassEncoder.setIndexBuffer(indexBuffer, "uint16");
+        this._renderPassEncoder.setBindGroup(0, this._alignToViewPort());
+        this._renderPassEncoder.drawIndexed(6);
+    }
 
-        renderPassEncoder.end();
+    public beginDrawing(): void {
+        this._commandEncoder = this.device.createCommandEncoder({
+            label: "Filled rectangle drawing command encoder",
+        });
 
-        this.device.queue.submit([commandEncoder.finish()]);
+        this._renderPassEncoder = this._createRenderPassEncoder(this._commandEncoder, [1, 1, 1, 1]);
+    }
+
+    public finishDrawing(): void {
+        if (this._commandEncoder === null || this._renderPassEncoder === null) {
+            return;
+        }
+
+        this._renderPassEncoder.end();
+
+        this.device.queue.submit([this._commandEncoder.finish()]);
     }
 
     public createBuffer(

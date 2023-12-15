@@ -26,13 +26,7 @@ export class ShapeRenderer implements IShapeRenderer {
         }
 
         if (this._quadIndexBuffer === null) {
-            this._quadIndexBuffer = this._renderer.createBuffer(
-                new Uint16Array([
-                    0, 1, 2,
-                    2, 3, 0,
-                ]),
-                GPUBufferUsage.INDEX,
-            );
+            this._quadIndexBuffer = this._createQuadIndexBuffer();
         }
 
         const x = this._transform.position.x;
@@ -51,7 +45,17 @@ export class ShapeRenderer implements IShapeRenderer {
             (x - halfWidth), (y + halfHeight), ...this._color, // top left
         ];
 
-        this._renderer.draw(this._filledRectanglePipeline, vertices, this._quadIndexBuffer);
+        this._renderer.queueDraw(this._filledRectanglePipeline, vertices, this._quadIndexBuffer);
+    }
+
+    private _createQuadIndexBuffer(): GPUBuffer {
+        return this._renderer.createBuffer(
+            new Uint16Array([
+                0, 1, 2,
+                2, 3, 0,
+            ]),
+            GPUBufferUsage.INDEX,
+        );
     }
 
     private _createFilledRectangleRenderPipeline(): GPURenderPipeline {
@@ -95,6 +99,18 @@ export class ShapeRenderer implements IShapeRenderer {
                 entryPoint: "fs_main",
                 targets: [{
                     format: navigator.gpu.getPreferredCanvasFormat(),
+                    blend: {
+                        color: {
+                            srcFactor: "one",
+                            dstFactor: "one-minus-src-alpha",
+                            operation: "add",
+                        },
+                        alpha: {
+                            srcFactor: "one",
+                            dstFactor: "one-minus-src-alpha",
+                            operation: "add",
+                        },
+                    },
                 }],
             },
         });
