@@ -3,7 +3,7 @@ import {
     Behavior,
     Transform,
     Vector2,
-    SpriteRenderer,
+    Sprite,
 } from "karakuri";
 
 import circleSprite from "../assets/circle.png";
@@ -43,7 +43,7 @@ export async function game(): Promise<void> {
                 ),
             }),
             behavior: new MovableObject(),
-            spriteRenderer: new SpriteRenderer({ path: circleSprite, color: [1, 0, 0, 1] }),
+            sprite: new Sprite({ path: circleSprite, color: [1, 0, 0, 1] }),
         });
     }
 
@@ -55,7 +55,7 @@ export async function game(): Promise<void> {
                 ),
             }),
             behavior: new MovableObject(),
-            spriteRenderer: new SpriteRenderer({ path: "assets/ship-blue.png" }),
+            sprite: new Sprite({ path: "assets/ship-blue.png" }),
         });
     }
 

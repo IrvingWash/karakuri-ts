@@ -1,23 +1,23 @@
 import type { ITransform } from "../transform";
 import type { IInput } from "../../core/input";
 import type { IEntity } from "../../api/entity";
-import type { ISpriteRenderer } from "../sprite-renderer";
+import type { ISprite } from "../sprite";
 
 interface BehaviorParams {
     transform: ITransform;
     input: IInput;
-    spriteRenderer?: ISpriteRenderer,
+    sprite?: ISprite,
 }
 
 export abstract class Behavior {
     public transform!: ITransform;
     public input!: IInput;
-    public spriteRenderer?: ISpriteRenderer;
+    public sprite?: ISprite;
 
     public __init(params: BehaviorParams): void {
         this.transform = params.transform;
         this.input = params.input;
-        this.spriteRenderer = params.spriteRenderer;
+        this.sprite = params.sprite;
     }
 
     public onStart?(): void;
