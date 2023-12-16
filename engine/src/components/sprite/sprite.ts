@@ -3,16 +3,16 @@ import { RGBA } from "../../core/objects";
 import { IRenderer, Texture } from "../../core/renderer";
 import { ensureExists } from "../../utils/existence-ensurer";
 import type { ITransform } from "../transform";
-import type { ISpriteRenderer } from "./isprite-renderer";
+import type { ISprite } from "./isprite";
 import { spriteShader } from "./shaders/sprite-shader";
 
-interface SpriteRendererParams {
+interface SpriteParams {
     path: string;
     color?: RGBA;
     antialias?: boolean;
 }
 
-export class SpriteRenderer implements ISpriteRenderer {
+export class Sprite implements ISprite {
     private readonly _path: string;
     private readonly _color: RGBA;
     private readonly _antialias: boolean;
@@ -22,7 +22,7 @@ export class SpriteRenderer implements ISpriteRenderer {
 
     private _texture!: Texture;
 
-    public constructor(params: SpriteRendererParams) {
+    public constructor(params: SpriteParams) {
         this._path = params.path;
         this._color = params.color ?? [1, 1, 1, 1];
         this._antialias = params.antialias ?? false;

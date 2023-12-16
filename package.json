@@ -6,6 +6,8 @@
         "sandbox"
     ],
     "scripts": {
+        "build:prod": "npm run build:prod -w=engine",
+        "build:dev": "npm run build:dev -w=engine",
         "start:dev": "npm run build:dev -w=engine && npm run dev -w=sandbox",
         "test": "npm run test --workspaces --if-present",
         "lint": "npm run lint --workspaces --if-present",
