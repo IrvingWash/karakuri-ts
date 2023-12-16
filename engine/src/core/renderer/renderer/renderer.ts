@@ -40,11 +40,15 @@ export class Renderer implements IRenderer {
     private _commandEncoder: GPUCommandEncoder | null = null;
     private _renderPassEncoder: GPURenderPassEncoder | null = null;
 
-    private readonly _viewPortBindGroupLayout: GPUBindGroupLayout;
+    private _currentTexture: Texture | null = null;
     private readonly _pipelinesPerTexture: Map<string, SpritePipeline> = new Map();
     private readonly _batchDrawCallsPerTexture: Map<string, BatchDrawCall[]> = new Map(); // TODO: Consider using a Set instead of Array
     private readonly _allocatedVertexBuffers: GPUBuffer[] = [];
-    private _currentTexture: Texture | null = null;
+
+    private readonly _projectionMatrixBindGroupLayout: GPUBindGroupLayout;
+    private _projectionMatrixBindGroup: GPUBindGroup | null = null;
+    private readonly _projectionMatrixBuffer: GPUBuffer;
+
     private readonly _quadIndexBuffer: GPUBuffer;
 
     public constructor(device: GPUDevice, ctx: GPUCanvasContext, viewPort: IViewPort, clearColor: RGBA) {
@@ -53,7 +57,14 @@ export class Renderer implements IRenderer {
         this._viewPort = viewPort;
         this._clearColor = clearColor;
 
-        this._viewPortBindGroupLayout = this.device.createBindGroupLayout({
+        this._quadIndexBuffer = this._createQuadIndexBuffer();
+
+        this._projectionMatrixBuffer = this._createBuffer(
+            this._viewPort.projectionMatrix.values.byteLength,
+            GPUBufferUsage.UNIFORM,
+        );
+
+        this._projectionMatrixBindGroupLayout = this.device.createBindGroupLayout({
             label: "View port bind group layout",
             entries: [{
                 binding: 0,
@@ -63,8 +74,6 @@ export class Renderer implements IRenderer {
                 },
             }],
         });
-
-        this._quadIndexBuffer = this._createQuadIndexBuffer();
     }
 
     public queueDraw(vertices: number[], texture: Texture, shader: string): void {
@@ -123,6 +132,20 @@ export class Renderer implements IRenderer {
         this._renderPassEncoder = this._createRenderPassEncoder(this._commandEncoder, this._clearColor);
 
         this._batchDrawCallsPerTexture.clear();
+
+        // TODO: Update camera
+
+        this._projectionMatrixBindGroup = this.device.createBindGroup({
+            layout: this._projectionMatrixBindGroupLayout,
+            entries: [{
+                binding: 0,
+                resource: {
+                    buffer: this._projectionMatrixBuffer,
+                },
+            }],
+        });
+
+        this.device.queue.writeBuffer(this._projectionMatrixBuffer, 0, this._viewPort.projectionMatrix.values);
     }
 
     public finishDrawing(): void {
@@ -140,8 +163,9 @@ export class Renderer implements IRenderer {
 
                 let vertexBuffer = this._allocatedVertexBuffers.pop();
                 if (vertexBuffer === undefined) {
-                    vertexBuffer = this._createBuffer(batchDrawCall.vertexData, GPUBufferUsage.VERTEX);
-                    // TODO: Maybe we must rewrite the buffer every time
+                    vertexBuffer = this._createAndWriteBuffer(batchDrawCall.vertexData, GPUBufferUsage.VERTEX);
+                } else {
+                    this.device.queue.writeBuffer(vertexBuffer, 0, batchDrawCall.vertexData);
                 }
 
                 usedVertexBuffers.push(vertexBuffer);
@@ -149,7 +173,7 @@ export class Renderer implements IRenderer {
                 const pipeline = batchDrawCall.pipeline;
 
                 this._renderPassEncoder.setPipeline(pipeline.pipeline);
-                this._renderPassEncoder.setBindGroup(0, this._alignToViewPort());
+                this._renderPassEncoder.setBindGroup(0, this._projectionMatrixBindGroup);
                 this._renderPassEncoder.setBindGroup(1, pipeline.textureBindGroup);
                 this._renderPassEncoder.setVertexBuffer(0, vertexBuffer);
                 this._renderPassEncoder.setIndexBuffer(this._quadIndexBuffer, "uint16");
@@ -167,39 +191,31 @@ export class Renderer implements IRenderer {
         this.device.queue.submit([this._commandEncoder.finish()]);
     }
 
-    private _createBuffer(
+    private _createAndWriteBuffer(
         data: Float32Array | Uint16Array,
         type: GPUFlagsConstant,
         label?: string,
     ): GPUBuffer {
-        const buffer = this.device.createBuffer({
-            size: data.byteLength,
+        const buffer = this._createBuffer(
+            data.byteLength,
+            type,
             label,
-            usage: type | GPUBufferUsage.COPY_DST,
-        });
+        );
 
         this.device.queue.writeBuffer(buffer, 0, data);
 
         return buffer;
     }
 
-    private _alignToViewPort(): GPUBindGroup {
-        const buffer = this._createBuffer(
-            this._viewPort.projectionMatrix.values,
-            GPUBufferUsage.UNIFORM,
-            "Viewport uniform buffer",
-        );
-
-        return this.device.createBindGroup({
-            label: "View port bind group",
-            layout: this._viewPortBindGroupLayout,
-            entries: [{
-                binding: 0,
-                resource: {
-                    buffer,
-                },
-            }],
+    private _createBuffer(byteLength: number, type: GPUFlagsConstant, label?: string): GPUBuffer {
+        const buffer = this.device.createBuffer({
+            label,
+            size: byteLength,
+            usage: type | GPUBufferUsage.COPY_DST,
+            mappedAtCreation: false,
         });
+
+        return buffer;
     }
 
     private _createRenderPassEncoder(
@@ -279,7 +295,7 @@ export class Renderer implements IRenderer {
             label: "Sprite render pipeline",
             layout: this.device.createPipelineLayout({
                 bindGroupLayouts: [
-                    this._viewPortBindGroupLayout,
+                    this._projectionMatrixBindGroupLayout,
                     textureBindGroupLayout,
                 ],
             }),
@@ -333,6 +349,6 @@ export class Renderer implements IRenderer {
             data[i * INDICES_PER_SPRITE + 5] = i * 4 + 0;
         }
 
-        return this._createBuffer(data, GPUBufferUsage.INDEX);
+        return this._createAndWriteBuffer(data, GPUBufferUsage.INDEX);
     }
 }

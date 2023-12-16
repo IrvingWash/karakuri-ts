@@ -35,7 +35,7 @@ export async function game(): Promise<void> {
     const level = engine.createScene();
     const canvasSize = engine.getCanvasSize();
 
-    for (let i = 0; i < 30000; i++) {
+    for (let i = 0; i < 1000; i++) {
         await level.createEntity({
             transform: new Transform({
                 position: new Vector2(
@@ -47,7 +47,7 @@ export async function game(): Promise<void> {
         });
     }
 
-    for (let i = 0; i < 30000; i++) {
+    for (let i = 0; i < 1000; i++) {
         await level.createEntity({
             transform: new Transform({
                 position: new Vector2(
