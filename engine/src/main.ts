@@ -3,7 +3,6 @@ export type { IEntity, EntityParams } from "./api/entity";
 
 export { Transform, type ITransform } from "./components/transform";
 export { Behavior } from "./components/behavior";
-export { ShapeRenderer, type IShapeRenderer } from "./components/shape-renderer";
 export { SpriteRenderer, type ISpriteRenderer } from "./components/sprite-renderer";
 
 export { Trigonometry } from "./math/trigonometry";

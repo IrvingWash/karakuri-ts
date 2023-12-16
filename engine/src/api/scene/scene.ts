@@ -54,7 +54,6 @@ export class Scene implements IScene {
 
             this._renderer.beginDrawing();
             for (const entity of this._entities) {
-                entity.shapeRenderer?.draw();
                 entity.spriteRenderer?.draw();
             }
             this._renderer.finishDrawing();

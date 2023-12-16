@@ -1,11 +1,34 @@
+import { ensureExists } from "../../../utils/existence-ensurer";
 import { RGBA } from "../../objects";
+import { SpritePipeline, Texture } from "../renderer-objects";
 import { type IViewPort } from "../view-port";
 import { IRenderer } from "./irenderer";
 
-// const MAX_SPRITE_COUNT_PER_BUFFER = 1000;
-// const INDICES_PER_SPRITE = 6;
-// const ATTRIBUTES_PER_VERTEX = 8;
-// const ATTRIBUTES_PER_SPRITE = ATTRIBUTES_PER_VERTEX * 4;
+const MAX_SPRITE_COUNT_PER_BUFFER = 1000;
+const INDICES_PER_SPRITE = 6;
+const ATTRIBUTES_PER_VERTEX = 8;
+const ATTRIBUTES_PER_SPRITE = ATTRIBUTES_PER_VERTEX * 4;
+
+class BatchDrawCall {
+    public pipeline: SpritePipeline;
+    public vertexData: Float32Array;
+
+    private _instanceCount: number;
+
+    public constructor(pipeline: SpritePipeline) {
+        this.pipeline = pipeline;
+        this.vertexData = new Float32Array(MAX_SPRITE_COUNT_PER_BUFFER * ATTRIBUTES_PER_SPRITE);
+        this._instanceCount = 0;
+    }
+
+    public incrementInstanceCount(): void {
+        this._instanceCount++;
+    }
+
+    public getInstanceCount(): number {
+        return this._instanceCount;
+    }
+}
 
 export class Renderer implements IRenderer {
     public readonly device: GPUDevice;
@@ -17,6 +40,12 @@ export class Renderer implements IRenderer {
 
     private _commandEncoder: GPUCommandEncoder | null = null;
     private _renderPassEncoder: GPURenderPassEncoder | null = null;
+
+    private readonly _pipelinesPerTexture: Map<string, SpritePipeline> = new Map();
+    private readonly _batchDrawCallsPerTexture: Map<string, BatchDrawCall[]> = new Map(); // TODO: Consider using a Set instead of Array
+    private readonly _allocatedVertexData: GPUBuffer[] = [];
+    private _currentTexture: Texture | null = null;
+    private readonly _quadIndexBuffer: GPUBuffer;
 
     public constructor(device: GPUDevice, ctx: GPUCanvasContext, viewPort: IViewPort, clearColor: RGBA) {
         this.device = device;
@@ -34,29 +63,56 @@ export class Renderer implements IRenderer {
                 },
             }],
         });
+
+        this._quadIndexBuffer = this._createQuadIndexBuffer();
     }
 
-    public queueDraw(pipeline: GPURenderPipeline, vertices: number[], indexBuffer: GPUBuffer, bindGroups: GPUBindGroup[] = []): void {
-        if (this._renderPassEncoder === null || this._commandEncoder === null) {
-            return;
+    public queueDraw(vertices: number[], texture: Texture, shader: string): void {
+        // TODO: the contents of this if statement need to be moved into a separate method.
+        if (this._currentTexture !== texture) {
+            this._currentTexture = texture;
+
+            if (this._renderPassEncoder === null || this._commandEncoder === null) {
+                return;
+            }
+
+            let pipeline = this._pipelinesPerTexture.get(texture.id);
+            if (pipeline === undefined) {
+                pipeline = this._createSpritePipeline(shader, texture);
+
+                this._pipelinesPerTexture.set(texture.id, pipeline);
+            }
+
+            let batchDrawCalls = this._batchDrawCallsPerTexture.get(texture.id);
+            if (batchDrawCalls === undefined) {
+                this._batchDrawCallsPerTexture.set(texture.id, []);
+            }
         }
 
-        this._renderPassEncoder.setPipeline(pipeline);
+        const texturePipeline = ensureExists(this._pipelinesPerTexture.get(texture.id));
 
-        this._renderPassEncoder.setVertexBuffer(
-            0,
-            this.createBuffer(new Float32Array(vertices), GPUBufferUsage.VERTEX),
-        );
+        const textureBatchDrawCalls = this._batchDrawCallsPerTexture.get(texture.id);
 
-        this._renderPassEncoder.setIndexBuffer(indexBuffer, "uint16");
+        let batchDrawCall = textureBatchDrawCalls?.at(-1);
+        if (batchDrawCall === undefined) {
+            batchDrawCall = new BatchDrawCall(texturePipeline);
 
-        this._renderPassEncoder.setBindGroup(0, this._alignToViewPort());
-
-        for (const [id, bindGroup] of bindGroups.entries()) {
-            this._renderPassEncoder.setBindGroup(id + 1, bindGroup);
+            this._batchDrawCallsPerTexture.get(texture.id)?.push(batchDrawCall);
         }
 
-        this._renderPassEncoder.drawIndexed(6);
+        let index = batchDrawCall.getInstanceCount() * ATTRIBUTES_PER_SPRITE;
+
+        for (let i = 0; i < ATTRIBUTES_PER_SPRITE; i++) {
+            batchDrawCall.vertexData[i + index] = ensureExists(vertices[i]);
+        }
+
+        batchDrawCall.incrementInstanceCount();
+
+        if (batchDrawCall.getInstanceCount() >= MAX_SPRITE_COUNT_PER_BUFFER) {
+            const newBatch = new BatchDrawCall(texturePipeline);
+
+            this._batchDrawCallsPerTexture.get(texture.id)?.push(newBatch);
+        }
     }
 
     public beginDrawing(): void {
@@ -65,6 +121,8 @@ export class Renderer implements IRenderer {
         });
 
         this._renderPassEncoder = this._createRenderPassEncoder(this._commandEncoder, this._clearColor);
+
+        this._batchDrawCallsPerTexture.clear();
     }
 
     public finishDrawing(): void {
@@ -72,6 +130,33 @@ export class Renderer implements IRenderer {
             return;
         }
 
+        let usedVertexBuffers: GPUBuffer[] = [];
+
+        for (const textureBatchDrawCalls of this._batchDrawCallsPerTexture.values()) {
+            for (const batchDrawCall of textureBatchDrawCalls) {
+                if (batchDrawCall.getInstanceCount() === 0) {
+                    continue;
+                }
+
+                let vertexBuffer = this._allocatedVertexData.pop();
+                if (vertexBuffer === undefined) {
+                    vertexBuffer = this.createBuffer(batchDrawCall.vertexData, GPUBufferUsage.VERTEX);
+                    // TODO: Maybe we must rewrite the buffer every time
+                }
+
+                usedVertexBuffers.push(vertexBuffer);
+
+                const pipeline = batchDrawCall.pipeline;
+
+                this._renderPassEncoder.setPipeline(pipeline.pipeline);
+                this._renderPassEncoder.setBindGroup(0, this._alignToViewPort());
+                this._renderPassEncoder.setBindGroup(1, pipeline.textureBindGroup);
+                this._renderPassEncoder.setVertexBuffer(0, vertexBuffer);
+                this._renderPassEncoder.setIndexBuffer(this._quadIndexBuffer, "uint16");
+
+                this._renderPassEncoder.drawIndexed(6);
+            }
+        }
         this._renderPassEncoder.end();
 
         this.device.queue.submit([this._commandEncoder.finish()]);
@@ -126,5 +211,123 @@ export class Renderer implements IRenderer {
                 clearValue,
             }],
         });
+    }
+
+    private _createSpritePipeline(shader: string, texture: Texture): SpritePipeline {
+        const shaderModule = this.device.createShaderModule({
+            label: "Sprite shader module",
+            code: shader,
+        });
+
+        const vertexBufferLayout: GPUVertexBufferLayout = {
+            arrayStride: 8 * Float32Array.BYTES_PER_ELEMENT,
+            attributes: [
+                {
+                    shaderLocation: 0,
+                    offset: 0,
+                    format: "float32x2",
+                },
+                {
+                    shaderLocation: 1,
+                    offset: 2 * Float32Array.BYTES_PER_ELEMENT,
+                    format: "float32x2",
+                },
+                {
+                    shaderLocation: 2,
+                    offset: 4 * Float32Array.BYTES_PER_ELEMENT,
+                    format: "float32x4",
+                },
+            ],
+            stepMode: "vertex",
+        };
+
+        const textureBindGroupLayout = this.device.createBindGroupLayout({
+            entries: [
+                {
+                    binding: 0,
+                    visibility: GPUShaderStage.FRAGMENT,
+                    sampler: {},
+                },
+                {
+                    binding: 1,
+                    visibility: GPUShaderStage.FRAGMENT,
+                    texture: {},
+                },
+            ],
+        });
+
+        const bindGroup = this.device.createBindGroup({
+            layout: textureBindGroupLayout,
+            entries: [
+                {
+                    binding: 0,
+                    resource: texture.sampler,
+                },
+                {
+                    binding: 1,
+                    resource: texture.texture.createView(),
+                },
+            ],
+        });
+
+        const pipeline = this.device.createRenderPipeline({
+            label: "Sprite render pipeline",
+            layout: this.device.createPipelineLayout({
+                bindGroupLayouts: [
+                    this.viewPortBindGroupLayout,
+                    textureBindGroupLayout,
+                ],
+            }),
+            primitive: {
+                topology: "triangle-list",
+            },
+            vertex: {
+                module: shaderModule,
+                entryPoint: "vs_main",
+                buffers: [vertexBufferLayout],
+            },
+            fragment: {
+                module: shaderModule,
+                entryPoint: "fs_main",
+                targets: [{
+                    format: navigator.gpu.getPreferredCanvasFormat(),
+                    blend: {
+                        color: {
+                            srcFactor: "one",
+                            dstFactor: "one-minus-src-alpha",
+                            operation: "add",
+                        },
+                        alpha: {
+                            srcFactor: "one",
+                            dstFactor: "one-minus-src-alpha",
+                            operation: "add",
+                        },
+                    },
+                }],
+            },
+        });
+
+        return {
+            pipeline,
+            textureBindGroup: bindGroup,
+        };
+    }
+
+    private _createQuadIndexBuffer(): GPUBuffer {
+        const data = new Uint16Array(MAX_SPRITE_COUNT_PER_BUFFER * INDICES_PER_SPRITE);
+
+        for (let i = 0; i < MAX_SPRITE_COUNT_PER_BUFFER; i++) {
+            // triangle 1
+            data[i * INDICES_PER_SPRITE + 0] = i * 4 + 0;
+            data[i * INDICES_PER_SPRITE + 1] = i * 4 + 1;
+            data[i * INDICES_PER_SPRITE + 2] = i * 4 + 2;
+
+            // triangle 2
+            data[i * INDICES_PER_SPRITE + 3] = i * 4 + 2;
+            data[i * INDICES_PER_SPRITE + 4] = i * 4 + 3;
+            data[i * INDICES_PER_SPRITE + 5] = i * 4 + 0;
+        }
+
+        return this.createBuffer(data, GPUBufferUsage.INDEX);
     }
 }
