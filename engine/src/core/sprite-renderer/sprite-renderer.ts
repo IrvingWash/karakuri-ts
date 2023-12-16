@@ -62,46 +62,19 @@ export class SpriteRenderer implements ISpriteRenderer {
             return;
         }
 
-        // TODO: the contents of this if statement need to be moved into a separate method.
         if (this._currentTexture !== texture) {
-            this._currentTexture = texture;
-
-            let pipeline = this._pipelinesPerTexture.get(texture.id);
-            if (pipeline === undefined) {
-                pipeline = this._createSpritePipeline(spriteShader, texture);
-
-                this._pipelinesPerTexture.set(texture.id, pipeline);
-            }
-
-            let batchDrawCalls = this._batchDrawCallsPerTexture.get(texture.id);
-            if (batchDrawCalls === undefined) {
-                this._batchDrawCallsPerTexture.set(texture.id, []);
-            }
+            this._switchTexture(texture);
         }
 
         const texturePipeline = ensureExists(this._pipelinesPerTexture.get(texture.id));
+        const batchDrawCall = this._getOrCreateBatchDrawCall(texture, texturePipeline);
 
-        const textureBatchDrawCalls = this._batchDrawCallsPerTexture.get(texture.id);
-
-        let batchDrawCall = textureBatchDrawCalls?.at(-1);
-        if (batchDrawCall === undefined) {
-            batchDrawCall = new BatchDrawCall(texturePipeline, MAX_SPRITE_COUNT_PER_BUFFER, ATTRIBUTES_PER_SPRITE);
-
-            this._batchDrawCallsPerTexture.get(texture.id)?.push(batchDrawCall);
-        }
-
-        let index = batchDrawCall.getInstanceCount() * ATTRIBUTES_PER_SPRITE;
-
-        for (let i = 0; i < ATTRIBUTES_PER_SPRITE; i++) {
-            batchDrawCall.vertexData[i + index] = ensureExists(vertices[i]);
-        }
+        this._addVerticesIntoBatchDrawCall(batchDrawCall, vertices);
 
         batchDrawCall.incrementInstanceCount();
 
         if (batchDrawCall.getInstanceCount() >= MAX_SPRITE_COUNT_PER_BUFFER) {
-            const newBatch = new BatchDrawCall(texturePipeline, MAX_SPRITE_COUNT_PER_BUFFER, ATTRIBUTES_PER_SPRITE);
-
-            this._batchDrawCallsPerTexture.get(texture.id)?.push(newBatch);
+            this._addBatchDrawCallToTexture(texture, texturePipeline);
         }
     }
 
@@ -163,9 +136,7 @@ export class SpriteRenderer implements ISpriteRenderer {
             }
         }
 
-        for (const vertexBuffer of usedVertexBuffers) {
-            this._allocatedVertexBuffers.push(vertexBuffer);
-        }
+        this._allocatedVertexBuffers.push(...usedVertexBuffers);
 
         this._renderPassEncoder.end();
 
@@ -197,6 +168,49 @@ export class SpriteRenderer implements ISpriteRenderer {
         });
 
         return buffer;
+    }
+
+    private _switchTexture(texture: Texture): void {
+        this._currentTexture = texture;
+
+        let pipeline = this._pipelinesPerTexture.get(texture.id);
+        if (pipeline === undefined) {
+            pipeline = this._createSpritePipeline(spriteShader, texture);
+
+            this._pipelinesPerTexture.set(texture.id, pipeline);
+        }
+
+        let batchDrawCalls = this._batchDrawCallsPerTexture.get(texture.id);
+        if (batchDrawCalls === undefined) {
+            this._batchDrawCallsPerTexture.set(texture.id, []);
+        }
+    }
+
+    private _getOrCreateBatchDrawCall(texture: Texture, texturePipeline: SpritePipeline): BatchDrawCall {
+        const textureBatchDrawCalls = this._batchDrawCallsPerTexture.get(texture.id);
+
+        let batchDrawCall = textureBatchDrawCalls?.at(-1);
+        if (batchDrawCall === undefined) {
+            batchDrawCall = new BatchDrawCall(texturePipeline, MAX_SPRITE_COUNT_PER_BUFFER, ATTRIBUTES_PER_SPRITE);
+
+            this._batchDrawCallsPerTexture.get(texture.id)?.push(batchDrawCall);
+        }
+
+        return batchDrawCall;
+    }
+
+    private _addVerticesIntoBatchDrawCall(batchDrawCall: BatchDrawCall, vertices: number[]): void {
+        let index = batchDrawCall.getInstanceCount() * ATTRIBUTES_PER_SPRITE;
+
+        for (let i = 0; i < ATTRIBUTES_PER_SPRITE; i++) {
+            batchDrawCall.vertexData[i + index] = ensureExists(vertices[i]);
+        }
+    }
+
+    private _addBatchDrawCallToTexture(texture: Texture, texturePipeline: SpritePipeline): void {
+        const newBatch = new BatchDrawCall(texturePipeline, MAX_SPRITE_COUNT_PER_BUFFER, ATTRIBUTES_PER_SPRITE);
+
+        this._batchDrawCallsPerTexture.get(texture.id)?.push(newBatch);
     }
 
     private _createRenderPassEncoder(
