@@ -68,13 +68,13 @@ export class Renderer implements IRenderer {
     }
 
     public queueDraw(vertices: number[], texture: Texture, shader: string): void {
+        if (this._renderPassEncoder === null || this._commandEncoder === null) {
+            return;
+        }
+
         // TODO: the contents of this if statement need to be moved into a separate method.
         if (this._currentTexture !== texture) {
             this._currentTexture = texture;
-
-            if (this._renderPassEncoder === null || this._commandEncoder === null) {
-                return;
-            }
 
             let pipeline = this._pipelinesPerTexture.get(texture.id);
             if (pipeline === undefined) {
@@ -130,7 +130,7 @@ export class Renderer implements IRenderer {
             return;
         }
 
-        let usedVertexBuffers: GPUBuffer[] = [];
+        const usedVertexBuffers: GPUBuffer[] = [];
 
         for (const textureBatchDrawCalls of this._batchDrawCallsPerTexture.values()) {
             for (const batchDrawCall of textureBatchDrawCalls) {
@@ -154,7 +154,7 @@ export class Renderer implements IRenderer {
                 this._renderPassEncoder.setVertexBuffer(0, vertexBuffer);
                 this._renderPassEncoder.setIndexBuffer(this._quadIndexBuffer, "uint16");
 
-                this._renderPassEncoder.drawIndexed(6);
+                this._renderPassEncoder.drawIndexed(6 * batchDrawCall.getInstanceCount());
             }
         }
 

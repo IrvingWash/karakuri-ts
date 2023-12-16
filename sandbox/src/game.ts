@@ -33,42 +33,31 @@ export async function game(): Promise<void> {
     await engine.init();
 
     const level = engine.createScene();
+    const canvasSize = engine.getCanvasSize();
 
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(
-                50, 50,
-            ),
-        }),
-        behavior: new MovableObject(),
-        spriteRenderer: new SpriteRenderer({ path: "assets/ship-blue.png" }),
-    });
+    for (let i = 0; i < 30000; i++) {
+        await level.createEntity({
+            transform: new Transform({
+                position: new Vector2(
+                    canvasSize.width * Math.random(), canvasSize.height * Math.random(),
+                ),
+            }),
+            behavior: new MovableObject(),
+            spriteRenderer: new SpriteRenderer({ path: circleSprite, color: [1, 0, 0, 1] }),
+        });
+    }
 
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(
-                500, 500,
-            ),
-        }),
-        behavior: new MovableObject(),
-        spriteRenderer: new SpriteRenderer({ path: "assets/ship-blue.png" }),
-    });
-
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(100, 100),
-        }),
-        behavior: new MovableObject(),
-        spriteRenderer: new SpriteRenderer({ path: circleSprite, color: [1, 0, 0, 1] }),
-    });
-
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(1000, 1000),
-        }),
-        behavior: new MovableObject(),
-        spriteRenderer: new SpriteRenderer({ path: circleSprite, color: [1, 0, 0, 1] }),
-    });
+    for (let i = 0; i < 30000; i++) {
+        await level.createEntity({
+            transform: new Transform({
+                position: new Vector2(
+                    canvasSize.width * Math.random(), canvasSize.height * Math.random(),
+                ),
+            }),
+            behavior: new MovableObject(),
+            spriteRenderer: new SpriteRenderer({ path: "assets/ship-blue.png" }),
+        });
+    }
 
     level.start();
 }

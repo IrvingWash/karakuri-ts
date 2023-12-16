@@ -38,7 +38,7 @@ export class Karakuri implements IKarakuri {
         this._isInitialized = true;
     }
 
-    public getSize(): CanvasSize {
+    public getCanvasSize(): CanvasSize {
         return this._canvas.getSize();
     }
 
