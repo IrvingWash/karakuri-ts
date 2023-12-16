@@ -1,36 +1,17 @@
-import { ensureExists } from "../../../utils/existence-ensurer";
-import { RGBA } from "../../objects";
-import { SpritePipeline, Texture } from "../renderer-objects";
-import { type IViewPort } from "../view-port";
-import { IRenderer } from "./irenderer";
+import { ensureExists } from "../../utils/existence-ensurer";
+import { type RGBA } from "../objects";
+import type { SpritePipeline, Texture } from "./sprite-renderer-objects";
+import { type IViewPort } from "./view-port";
+import { type ISpriteRenderer } from "./isprite-renderer";
+import { BatchDrawCall } from "./batch-draw-call";
+import { spriteShader } from "./shaders/sprite-shader";
 
 const MAX_SPRITE_COUNT_PER_BUFFER = 1000;
 const INDICES_PER_SPRITE = 6;
 const ATTRIBUTES_PER_VERTEX = 8;
 const ATTRIBUTES_PER_SPRITE = ATTRIBUTES_PER_VERTEX * 4;
 
-class BatchDrawCall {
-    public pipeline: SpritePipeline;
-    public vertexData: Float32Array;
-
-    private _instanceCount: number;
-
-    public constructor(pipeline: SpritePipeline) {
-        this.pipeline = pipeline;
-        this.vertexData = new Float32Array(MAX_SPRITE_COUNT_PER_BUFFER * ATTRIBUTES_PER_SPRITE);
-        this._instanceCount = 0;
-    }
-
-    public incrementInstanceCount(): void {
-        this._instanceCount++;
-    }
-
-    public getInstanceCount(): number {
-        return this._instanceCount;
-    }
-}
-
-export class Renderer implements IRenderer {
+export class SpriteRenderer implements ISpriteRenderer {
     public readonly device: GPUDevice;
 
     private readonly _ctx: GPUCanvasContext;
@@ -76,7 +57,7 @@ export class Renderer implements IRenderer {
         });
     }
 
-    public queueDraw(vertices: number[], texture: Texture, shader: string): void {
+    public queueDraw(vertices: number[], texture: Texture): void {
         if (this._renderPassEncoder === null || this._commandEncoder === null) {
             return;
         }
@@ -87,7 +68,7 @@ export class Renderer implements IRenderer {
 
             let pipeline = this._pipelinesPerTexture.get(texture.id);
             if (pipeline === undefined) {
-                pipeline = this._createSpritePipeline(shader, texture);
+                pipeline = this._createSpritePipeline(spriteShader, texture);
 
                 this._pipelinesPerTexture.set(texture.id, pipeline);
             }
@@ -104,7 +85,7 @@ export class Renderer implements IRenderer {
 
         let batchDrawCall = textureBatchDrawCalls?.at(-1);
         if (batchDrawCall === undefined) {
-            batchDrawCall = new BatchDrawCall(texturePipeline);
+            batchDrawCall = new BatchDrawCall(texturePipeline, MAX_SPRITE_COUNT_PER_BUFFER, ATTRIBUTES_PER_SPRITE);
 
             this._batchDrawCallsPerTexture.get(texture.id)?.push(batchDrawCall);
         }
@@ -118,7 +99,7 @@ export class Renderer implements IRenderer {
         batchDrawCall.incrementInstanceCount();
 
         if (batchDrawCall.getInstanceCount() >= MAX_SPRITE_COUNT_PER_BUFFER) {
-            const newBatch = new BatchDrawCall(texturePipeline);
+            const newBatch = new BatchDrawCall(texturePipeline, MAX_SPRITE_COUNT_PER_BUFFER, ATTRIBUTES_PER_SPRITE);
 
             this._batchDrawCallsPerTexture.get(texture.id)?.push(newBatch);
         }

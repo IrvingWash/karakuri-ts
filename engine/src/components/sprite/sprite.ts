@@ -1,10 +1,9 @@
 import type { IAssetStorage } from "../../core/asset-storage";
 import { RGBA } from "../../core/objects";
-import { IRenderer, Texture } from "../../core/renderer";
+import { ISpriteRenderer, Texture } from "../../core/sprite-renderer";
 import { ensureExists } from "../../utils/existence-ensurer";
 import type { ITransform } from "../transform";
 import type { ISprite } from "./isprite";
-import { spriteShader } from "./shaders/sprite-shader";
 
 interface SpriteParams {
     path: string;
@@ -17,10 +16,14 @@ export class Sprite implements ISprite {
     private readonly _color: RGBA;
     private readonly _antialias: boolean;
 
-    private _renderer!: IRenderer;
+    private _spriteRenderer!: ISpriteRenderer;
     private _transform!: ITransform;
 
     private _texture!: Texture;
+
+    private _vertices: number[] | null = null;
+    private _previousX: number | null = null;
+    private _previousY: number | null = null;
 
     public constructor(params: SpriteParams) {
         this._path = params.path;
@@ -28,11 +31,11 @@ export class Sprite implements ISprite {
         this._antialias = params.antialias ?? false;
     }
 
-    public async __init(renderer: IRenderer, transform: ITransform, assetStorage: IAssetStorage): Promise<void> {
-        this._renderer = renderer;
+    public async __init(spriteRenderer: ISpriteRenderer, transform: ITransform, assetStorage: IAssetStorage): Promise<void> {
+        this._spriteRenderer = spriteRenderer;
         this._transform = transform;
 
-        await assetStorage.addTexture(this._path, this._renderer.device, this._antialias);
+        await assetStorage.addTexture(this._path, this._spriteRenderer.device, this._antialias);
 
         this._texture = ensureExists(assetStorage.getTexture(this._path));
     }
@@ -40,23 +43,32 @@ export class Sprite implements ISprite {
     public draw(): void {
         const x = this._transform.position.x;
         const y = this._transform.position.y;
+
+        if (this._vertices === null || (x !== this._previousX || y !== this._previousY)) {
+            this._vertices = this._calculateVertices(x, y);
+        }
+
+        this._spriteRenderer.queueDraw(
+            this._vertices,
+            this._texture,
+        );
+    }
+
+    private _calculateVertices(x: number, y: number): number[] {
+        this._previousX = x;
+        this._previousY = y;
+
         const width = this._texture.texture.width * this._transform.scale.x;
         const height = this._texture.texture.height * this._transform.scale.y;
 
         const halfWidth = width * 0.5;
         const halfHeight = height * 0.5;
 
-        const vertices = [
+        return [
             (x + halfWidth), (y + halfHeight), 1, 1, ...this._color, // top right
             (x + halfWidth), (y - halfHeight), 1, 0, ...this._color, // bottom right
             (x - halfWidth), (y - halfHeight), 0, 0, ...this._color, // bottom left
             (x - halfWidth), (y + halfHeight), 0, 1, ...this._color, // top left
         ];
-
-        this._renderer.queueDraw(
-            vertices,
-            this._texture,
-            spriteShader,
-        );
     }
 }

@@ -1,21 +1,21 @@
 import type { IAssetStorage } from "../../core/asset-storage";
 import type { IInput } from "../../core/input";
 import type { ILooper } from "../../core/looper";
-import type { IRenderer } from "../../core/renderer";
+import type { ISpriteRenderer } from "../../core/sprite-renderer";
 import { Entity, type IEntity, type EntityParams } from "../entity";
 import type { IScene } from "./iscene";
 
 interface SceneParams {
     input: IInput;
     looper: ILooper;
-    renderer: IRenderer;
+    spriteRenderer: ISpriteRenderer;
     assetStorage: IAssetStorage;
 }
 
 export class Scene implements IScene {
     private readonly _input: IInput;
     private readonly _looper: ILooper;
-    private readonly _renderer: IRenderer;
+    private readonly _spriteRenderer: ISpriteRenderer;
     private readonly _assetStorage: IAssetStorage;
 
     private readonly _entities: IEntity[] = [];
@@ -24,20 +24,20 @@ export class Scene implements IScene {
         const {
             input,
             looper,
-            renderer,
+            spriteRenderer,
             assetStorage,
         } = params;
 
         this._input = input;
         this._looper = looper;
-        this._renderer = renderer;
+        this._spriteRenderer = spriteRenderer;
         this._assetStorage = assetStorage;
     }
 
     public async createEntity(params: EntityParams): Promise<IEntity> {
         const entity: IEntity = new Entity(params);
 
-        await entity.__init(this._input, this._assetStorage, this._renderer);
+        await entity.__init(this._input, this._assetStorage, this._spriteRenderer);
         entity.start();
 
         this._entities.push(entity);
@@ -57,11 +57,11 @@ export class Scene implements IScene {
                 entity.update(deltaTime);
             }
 
-            this._renderer.beginDrawing();
+            this._spriteRenderer.beginDrawing();
             for (const entity of this._entities) {
                 entity.sprite?.draw();
             }
-            this._renderer.finishDrawing();
+            this._spriteRenderer.finishDrawing();
         });
     }
 
