@@ -4,6 +4,7 @@ import { type ILooper, Looper } from "../../core/looper";
 import { type RGBA } from "../../core/objects";
 import { type IRenderer, Renderer, initializeGPU } from "../../core/renderer";
 import { ViewPort } from "../../core/renderer/view-port";
+import { AssetStorage, type IAssetStorage } from "../../core/asset-storage";
 import { type IScene, Scene } from "../scene";
 import type { IKarakuri } from "./ikarakuri";
 import { EngineConfiguration } from "./karakuri-objects";
@@ -12,6 +13,7 @@ export class Karakuri implements IKarakuri {
     private readonly _canvas: ICanvas;
     private readonly _looper: ILooper;
     private readonly _input: IInput;
+    private readonly _assetStorage: IAssetStorage;
     private _renderer!: IRenderer;
 
     private readonly _clearColor: RGBA;
@@ -22,6 +24,7 @@ export class Karakuri implements IKarakuri {
         this._canvas = new Canvas(params?.canvasSize);
         this._looper = new Looper();
         this._input = new Input();
+        this._assetStorage = new AssetStorage();
 
         this._clearColor = params?.clearColor ?? [1, 1, 1, 1];
     }
@@ -48,6 +51,7 @@ export class Karakuri implements IKarakuri {
             input: this._input,
             renderer: this._renderer,
             looper: this._looper,
+            assetStorage: this._assetStorage,
         });
     }
 }

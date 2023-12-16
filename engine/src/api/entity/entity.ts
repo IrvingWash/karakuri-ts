@@ -3,7 +3,8 @@ import type { IInput } from "../../core/input";
 import { Transform, type ITransform } from "../../components/transform";
 import { Behavior } from "../../components/behavior";
 import type { ISpriteRenderer } from "../../components/sprite-renderer";
-import { IRenderer } from "../../core/renderer";
+import type { IRenderer } from "../../core/renderer";
+import type { IAssetStorage } from "../../core/asset-storage";
 
 export interface EntityParams {
     transform?: ITransform;
@@ -22,8 +23,8 @@ export class Entity implements IEntity {
         this.spriteRenderer = params.spriteRenderer;
     }
 
-    public async __init(input: IInput, renderer: IRenderer): Promise<void> {
-        await this.spriteRenderer?.__init(renderer, this.transform);
+    public async __init(input: IInput, assetStorage: IAssetStorage, renderer: IRenderer): Promise<void> {
+        await this.spriteRenderer?.__init(renderer, this.transform, assetStorage);
 
         this.behavior?.__init({
             transform: this.transform,

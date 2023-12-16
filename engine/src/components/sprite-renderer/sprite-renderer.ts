@@ -1,7 +1,9 @@
+import type { IAssetStorage } from "../../core/asset-storage";
 import { RGBA } from "../../core/objects";
 import { IRenderer, Texture } from "../../core/renderer";
-import { ITransform } from "../transform";
-import { ISpriteRenderer } from "./isprite-renderer";
+import { ensureExists } from "../../utils/existence-ensurer";
+import type { ITransform } from "../transform";
+import type { ISpriteRenderer } from "./isprite-renderer";
 import { spriteShader } from "./shaders/sprite-shader";
 
 interface SpriteRendererParams {
@@ -19,7 +21,6 @@ export class SpriteRenderer implements ISpriteRenderer {
     private _transform!: ITransform;
 
     private _texture!: Texture;
-    private _sampler!: GPUSampler;
 
     public constructor(params: SpriteRendererParams) {
         this._path = params.path;
@@ -27,11 +28,13 @@ export class SpriteRenderer implements ISpriteRenderer {
         this._antialias = params.antialias ?? false;
     }
 
-    public async __init(renderer: IRenderer, transform: ITransform): Promise<void> {
+    public async __init(renderer: IRenderer, transform: ITransform, assetStorage: IAssetStorage): Promise<void> {
         this._renderer = renderer;
         this._transform = transform;
 
-        await this._createTextureAndSampler();
+        await assetStorage.addTexture(this._path, this._renderer.device, this._antialias);
+
+        this._texture = ensureExists(assetStorage.getTexture(this._path));
     }
 
     public draw(): void {
@@ -54,44 +57,6 @@ export class SpriteRenderer implements ISpriteRenderer {
             vertices,
             this._texture,
             spriteShader,
-        );
-    }
-
-    private async _createTextureAndSampler(): Promise<void> {
-        const imageLoadPromise = new Promise<HTMLImageElement>((resolve, reject) => {
-            const image = new Image();
-            image.src = this._path;
-
-            image.onload = (): void => resolve(image);
-            image.onerror = (): void => reject(`Failed to load image ${this._path}`);
-        });
-
-        const image = await imageLoadPromise;
-
-        const filterMode: GPUFilterMode = this._antialias ? "linear" : "nearest";
-        this._sampler = this._renderer.device.createSampler({
-            magFilter: filterMode,
-            minFilter: filterMode,
-        });
-
-        this._texture = {
-            id: image.src,
-            texture: this._renderer.device.createTexture({
-                size: { width: image.width, height: image.height },
-                format: navigator.gpu.getPreferredCanvasFormat(),
-                usage: GPUTextureUsage.COPY_DST
-                    | GPUTextureUsage.TEXTURE_BINDING
-                    | GPUTextureUsage.RENDER_ATTACHMENT,
-            }),
-            sampler: this._sampler,
-        };
-
-        const data = await createImageBitmap(image);
-
-        this._renderer.device.queue.copyExternalImageToTexture(
-            { source: data },
-            { texture: this._texture.texture },
-            { width: image.width, height: image.height },
         );
     }
 }
