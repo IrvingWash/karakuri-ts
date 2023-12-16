@@ -1,8 +1,8 @@
 import type { IAssetStorage } from "../../core/asset-storage";
-import type { IRenderer } from "../../core/renderer";
+import type { ISpriteRenderer } from "../../core/sprite-renderer";
 import type { ITransform } from "../transform";
 
 export interface ISprite {
-    __init(renderer: IRenderer, transform: ITransform, assetStorage: IAssetStorage): Promise<void>;
+    __init(spriteRenderer: ISpriteRenderer, transform: ITransform, assetStorage: IAssetStorage): Promise<void>;
     draw(): void;
 }

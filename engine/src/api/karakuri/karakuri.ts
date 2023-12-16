@@ -2,8 +2,8 @@ import { Canvas, type CanvasSize, type ICanvas } from "../../core/canvas";
 import { type IInput, Input } from "../../core/input";
 import { type ILooper, Looper } from "../../core/looper";
 import { type RGBA } from "../../core/objects";
-import { type IRenderer, Renderer, initializeGPU } from "../../core/renderer";
-import { ViewPort } from "../../core/renderer/view-port";
+import { type ISpriteRenderer, SpriteRenderer, initializeGPU } from "../../core/sprite-renderer";
+import { ViewPort } from "../../core/sprite-renderer/view-port";
 import { AssetStorage, type IAssetStorage } from "../../core/asset-storage";
 import { type IScene, Scene } from "../scene";
 import type { IKarakuri } from "./ikarakuri";
@@ -14,7 +14,7 @@ export class Karakuri implements IKarakuri {
     private readonly _looper: ILooper;
     private readonly _input: IInput;
     private readonly _assetStorage: IAssetStorage;
-    private _renderer!: IRenderer;
+    private _spriteRenderer!: ISpriteRenderer;
 
     private readonly _clearColor: RGBA;
 
@@ -33,7 +33,7 @@ export class Karakuri implements IKarakuri {
         const [device, ctx] = await initializeGPU(this._canvas.getContextGpu());
         const viewPort = new ViewPort(this._canvas.getSize());
 
-        this._renderer = new Renderer(device, ctx, viewPort, this._clearColor);
+        this._spriteRenderer = new SpriteRenderer(device, ctx, viewPort, this._clearColor);
 
         this._isInitialized = true;
     }
@@ -49,7 +49,7 @@ export class Karakuri implements IKarakuri {
 
         return new Scene({
             input: this._input,
-            renderer: this._renderer,
+            spriteRenderer: this._spriteRenderer,
             looper: this._looper,
             assetStorage: this._assetStorage,
         });

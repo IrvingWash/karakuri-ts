@@ -1,4 +1,4 @@
-import { Texture } from "../renderer";
+import { Texture } from "../sprite-renderer";
 import { IAssetStorage } from "./iasset-storage";
 
 export class AssetStorage implements IAssetStorage {
