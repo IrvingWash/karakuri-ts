@@ -2,6 +2,11 @@ import { RGBA } from "../../objects";
 import { type IViewPort } from "../view-port";
 import { IRenderer } from "./irenderer";
 
+// const MAX_SPRITE_COUNT_PER_BUFFER = 1000;
+// const INDICES_PER_SPRITE = 6;
+// const ATTRIBUTES_PER_VERTEX = 8;
+// const ATTRIBUTES_PER_SPRITE = ATTRIBUTES_PER_VERTEX * 4;
+
 export class Renderer implements IRenderer {
     public readonly device: GPUDevice;
     public readonly viewPortBindGroupLayout: GPUBindGroupLayout;
