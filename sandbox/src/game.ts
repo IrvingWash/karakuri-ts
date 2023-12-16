@@ -34,30 +34,41 @@ export async function game(): Promise<void> {
 
     const level = engine.createScene();
 
-    const canvasSize = engine.getSize();
+    await level.createEntity({
+        transform: new Transform({
+            position: new Vector2(
+                50, 50,
+            ),
+        }),
+        behavior: new MovableObject(),
+        spriteRenderer: new SpriteRenderer({ path: "assets/ship-blue.png" }),
+    });
 
-    for (let i = 0; i < 1000; i++) {
-        await level.createEntity({
-            transform: new Transform({
-                position: new Vector2(
-                    Math.random() * canvasSize.width,
-                    Math.random() * canvasSize.height,
-                ),
-            }),
-            behavior: new MovableObject(),
-            spriteRenderer: new SpriteRenderer({ path: "assets/ship-blue.png" }),
-        });
-    }
+    await level.createEntity({
+        transform: new Transform({
+            position: new Vector2(
+                500, 500,
+            ),
+        }),
+        behavior: new MovableObject(),
+        spriteRenderer: new SpriteRenderer({ path: "assets/ship-blue.png" }),
+    });
 
-    for (let i = 0; i < 1000; i++) {
-        await level.createEntity({
-            transform: new Transform({
-                position: new Vector2(Math.random() * canvasSize.width, Math.random() * canvasSize.height),
-            }),
-            behavior: new MovableObject(),
-            spriteRenderer: new SpriteRenderer({ path: circleSprite, color: [1, 0, 0, 1] }),
-        });
-    }
+    await level.createEntity({
+        transform: new Transform({
+            position: new Vector2(100, 100),
+        }),
+        behavior: new MovableObject(),
+        spriteRenderer: new SpriteRenderer({ path: circleSprite, color: [1, 0, 0, 1] }),
+    });
+
+    await level.createEntity({
+        transform: new Transform({
+            position: new Vector2(1000, 1000),
+        }),
+        behavior: new MovableObject(),
+        spriteRenderer: new SpriteRenderer({ path: circleSprite, color: [1, 0, 0, 1] }),
+    });
 
     level.start();
 }

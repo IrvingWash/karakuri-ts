@@ -23,8 +23,6 @@
         "rootDir": "./",
         "module": "ESNext",
         "moduleResolution": "Node",
-        // TODO: add paths
-        // TODO: add types
         "resolveJsonModule": true,
         "allowArbitraryExtensions": false,
         "allowImportingTsExtensions": false,
@@ -35,7 +33,7 @@
         "declaration": true,
         "declarationMap": true,
         "sourceMap": true,
-        "stripInternal": true, // TODO: check if we really need it
+        "stripInternal": true,
         "noEmitOnError": true,
         "removeComments": false,
         "preserveConstEnums": true,
@@ -74,7 +72,7 @@
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
         "isolatedModules": true,
-        "verbatimModuleSyntax": false, // TODO: check if we really need it
+        "verbatimModuleSyntax": false,
 
         // JS support
         "allowJs": false,
