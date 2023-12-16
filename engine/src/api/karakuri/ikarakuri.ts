@@ -3,6 +3,6 @@ import { IScene } from "../scene";
 
 export interface IKarakuri {
     init(): Promise<void>;
-    getSize(): CanvasSize;
+    getCanvasSize(): CanvasSize;
     createScene(): IScene;
 }

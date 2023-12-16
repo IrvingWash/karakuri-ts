@@ -3,7 +3,6 @@ import {
     Behavior,
     Transform,
     Vector2,
-    ShapeRenderer,
     SpriteRenderer,
 } from "karakuri";
 
@@ -34,58 +33,31 @@ export async function game(): Promise<void> {
     await engine.init();
 
     const level = engine.createScene();
+    const canvasSize = engine.getCanvasSize();
 
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(0, 0),
-            scale: new Vector2(50, 50),
-        }),
-        behavior: new MovableObject(),
-        shapeRenderer: new ShapeRenderer([1, 0, 0, 1]),
-    });
+    for (let i = 0; i < 1000; i++) {
+        await level.createEntity({
+            transform: new Transform({
+                position: new Vector2(
+                    canvasSize.width * Math.random(), canvasSize.height * Math.random(),
+                ),
+            }),
+            behavior: new MovableObject(),
+            spriteRenderer: new SpriteRenderer({ path: circleSprite, color: [1, 0, 0, 1] }),
+        });
+    }
 
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(100, 100),
-            scale: new Vector2(50, 50),
-        }),
-        behavior: new MovableObject(),
-        shapeRenderer: new ShapeRenderer([0, 1, 0, 1]),
-    });
-
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(200, 200),
-            scale: new Vector2(50, 50),
-        }),
-        behavior: new MovableObject(),
-        shapeRenderer: new ShapeRenderer([0, 0, 1, 1]),
-    });
-
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(300, 300),
-        }),
-        behavior: new MovableObject(),
-        spriteRenderer: new SpriteRenderer({ path: "assets/ship-blue.png" }),
-    });
-
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(320, 320),
-            scale: new Vector2(0.5, 2),
-        }),
-        behavior: new MovableObject(),
-        spriteRenderer: new SpriteRenderer({ path: "assets/ship-blue.png" }),
-    });
-
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(330, 330),
-        }),
-        behavior: new MovableObject(),
-        spriteRenderer: new SpriteRenderer({ path: circleSprite, color: [1, 0, 0, 1] }),
-    });
+    for (let i = 0; i < 1000; i++) {
+        await level.createEntity({
+            transform: new Transform({
+                position: new Vector2(
+                    canvasSize.width * Math.random(), canvasSize.height * Math.random(),
+                ),
+            }),
+            behavior: new MovableObject(),
+            spriteRenderer: new SpriteRenderer({ path: "assets/ship-blue.png" }),
+        });
+    }
 
     level.start();
 }
