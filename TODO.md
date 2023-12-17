@@ -1,6 +1,7 @@
 # Todo
 
-- [ ] WebGPU Rendering
+- [x] Basic WebGPU Rendering
+- [ ] Advanced WebGPU Rendering
 - [ ] Matrix math
 - [ ] Improve input
 - [ ] Physics
