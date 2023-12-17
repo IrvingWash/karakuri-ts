@@ -6,8 +6,6 @@ import {
     Sprite,
 } from "karakuri";
 
-import circleSprite from "../assets/circle.png";
-
 class MovableObject extends Behavior {
     private _speed: number = 500;
 
@@ -35,29 +33,45 @@ export async function game(): Promise<void> {
     const level = engine.createScene();
     const canvasSize = engine.getCanvasSize();
 
-    for (let i = 0; i < 10000; i++) {
-        await level.createEntity({
-            transform: new Transform({
-                position: new Vector2(
-                    canvasSize.width * Math.random(), canvasSize.height * Math.random(),
-                ),
-            }),
-            behavior: new MovableObject(),
-            sprite: new Sprite({ path: circleSprite, color: [1, 0, 0, 1] }),
-        });
-    }
+    await level.createEntity({
+        transform: new Transform({
+            position: new Vector2(
+                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
+            ),
+        }),
+        behavior: new MovableObject(),
+        sprite: new Sprite({ path: "assets/ship-blue.png" }),
+    });
 
-    for (let i = 0; i < 10000; i++) {
-        await level.createEntity({
-            transform: new Transform({
-                position: new Vector2(
-                    canvasSize.width * Math.random(), canvasSize.height * Math.random(),
-                ),
-            }),
-            behavior: new MovableObject(),
-            sprite: new Sprite({ path: "assets/ship-blue.png" }),
-        });
-    }
+    await level.createEntity({
+        transform: new Transform({
+            position: new Vector2(
+                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
+            ),
+        }),
+        behavior: new MovableObject(),
+        sprite: new Sprite({ path: "assets/circle.png" }),
+    });
+
+    await level.createEntity({
+        transform: new Transform({
+            position: new Vector2(
+                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
+            ),
+        }),
+        behavior: new MovableObject(),
+        sprite: new Sprite({ path: "assets/ship-blue.png" }),
+    });
+
+    await level.createEntity({
+        transform: new Transform({
+            position: new Vector2(
+                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
+            ),
+        }),
+        behavior: new MovableObject(),
+        sprite: new Sprite({ path: "assets/circle.png" }),
+    });
 
     level.start();
 }

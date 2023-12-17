@@ -85,6 +85,7 @@ export class SpriteRenderer implements ISpriteRenderer {
 
         this._renderPassEncoder = this._createRenderPassEncoder(this._commandEncoder, this._clearColor);
 
+        this._currentTexture = null;
         this._batchDrawCallsPerTexture.clear();
 
         // TODO: Update camera
