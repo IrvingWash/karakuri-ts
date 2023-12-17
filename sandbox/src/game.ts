@@ -73,5 +73,41 @@ export async function game(): Promise<void> {
         sprite: new Sprite({ path: "assets/circle.png" }),
     });
 
+    await level.createEntity({
+        transform: new Transform({
+            position: new Vector2(
+                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
+            ),
+        }),
+        behavior: new MovableObject(),
+        sprite: new Sprite({
+            path: "assets/sheet.png",
+            clip: {
+                x: 444,
+                y: 0,
+                width: 91,
+                height: 91,
+            },
+        }),
+    });
+
+    await level.createEntity({
+        transform: new Transform({
+            position: new Vector2(
+                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
+            ),
+        }),
+        behavior: new MovableObject(),
+        sprite: new Sprite({
+            path: "assets/sheet.png",
+            clip: {
+                x: 778,
+                y: 527,
+                width: 31,
+                height: 30,
+            },
+        }),
+    });
+
     level.start();
 }
