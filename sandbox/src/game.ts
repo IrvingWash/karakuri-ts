@@ -43,5 +43,35 @@ export async function game(): Promise<void> {
         sprite: new Sprite({ path: "assets/ship-blue.png" }),
     });
 
+    await level.createEntity({
+        transform: new Transform({
+            position: new Vector2(
+                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
+            ),
+        }),
+        behavior: new MovableObject(),
+        sprite: new Sprite({ path: "assets/circle.png" }),
+    });
+
+    await level.createEntity({
+        transform: new Transform({
+            position: new Vector2(
+                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
+            ),
+        }),
+        behavior: new MovableObject(),
+        sprite: new Sprite({ path: "assets/ship-blue.png" }),
+    });
+
+    await level.createEntity({
+        transform: new Transform({
+            position: new Vector2(
+                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
+            ),
+        }),
+        behavior: new MovableObject(),
+        sprite: new Sprite({ path: "assets/circle.png" }),
+    });
+
     level.start();
 }
