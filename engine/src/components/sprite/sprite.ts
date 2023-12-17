@@ -68,6 +68,7 @@ export class Sprite implements ISprite {
         );
     }
 
+    // TODO: consider delegating some of these calculations to GPU
     private _calculateVertices(x: number, y: number): number[] {
         if (this._clip === null) {
             throw new Error("Clip is not initialized");
