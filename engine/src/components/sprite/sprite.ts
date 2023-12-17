@@ -46,14 +46,12 @@ export class Sprite implements ISprite {
 
         this._texture = ensureExists(assetStorage.getTexture(this._path));
 
-        if (this._clip === null) {
-            this._clip = {
-                x: 0,
-                y: 0,
-                width: this._texture.texture.width,
-                height: this._texture.texture.height,
-            };
-        }
+        this._clip ??= {
+            x: 0,
+            y: 0,
+            width: this._texture.texture.width,
+            height: this._texture.texture.height,
+        };
     }
 
     public draw(): void {
