@@ -61,7 +61,15 @@ export async function game(): Promise<void> {
 game();
 ```
 
-## Structure
+## Developing
+Clone this repo, then:
+```bash
+npm i
+
+npm run start:dev
+```
+
+### Structure
 The repository is divided into two workspaces:
 - `engine` contains the code of the engine itself
 - `sanbox` contains simple client side usage of the engine for testing and educational purposes.
