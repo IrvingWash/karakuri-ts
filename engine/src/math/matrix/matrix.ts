@@ -5,7 +5,7 @@ export class Matrix4 implements IMatrix4 {
 
     public constructor(values: Float32Array = new Float32Array(16)) {
         if (values.length !== 16) {
-            throw new Error(`Cannot instanitat Matrix4 with ${values.length} elements`);
+            throw new Error(`Cannot instantiate Matrix4 with ${values.length} elements`);
         }
 
         this.values = values;
