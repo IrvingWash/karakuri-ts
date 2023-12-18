@@ -10,6 +10,8 @@ class MovableObject extends Behavior {
     private _speed: number = 500;
 
     public onUpdate(deltaTime: number): void {
+        this.transform.scale.add(new Vector2(0.01, 0.01));
+
         this._move(deltaTime);
     }
 
@@ -38,6 +40,7 @@ export async function game(): Promise<void> {
             position: new Vector2(
                 canvasSize.width * Math.random(), canvasSize.height * Math.random(),
             ),
+            scale: new Vector2(2, 2),
         }),
         behavior: new MovableObject(),
         sprite: new Sprite({ path: "assets/ship-blue.png" }),
@@ -78,6 +81,7 @@ export async function game(): Promise<void> {
             position: new Vector2(
                 canvasSize.width * Math.random(), canvasSize.height * Math.random(),
             ),
+            scale: new Vector2(3, 3),
         }),
         behavior: new MovableObject(),
         sprite: new Sprite({

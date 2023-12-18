@@ -24,10 +24,6 @@ export class Sprite implements ISprite {
 
     private _texture!: Texture;
 
-    private _vertices: number[] | null = null;
-    private _previousX: number | null = null;
-    private _previousY: number | null = null;
-
     public constructor(params: SpriteParams) {
         this._path = params.path;
         this._color = params.color ?? [1, 1, 1, 1];
@@ -55,38 +51,27 @@ export class Sprite implements ISprite {
     }
 
     public draw(): void {
-        const x = this._transform.position.x;
-        const y = this._transform.position.y;
-
-        if (this._vertices === null || (x !== this._previousX || y !== this._previousY)) {
-            this._vertices = this._calculateVertices(x, y);
-        }
-
         this._spriteRenderer.queueDraw(
-            this._vertices,
+            this._calculateVertices(),
             this._texture,
         );
     }
 
     // TODO: consider delegating some of these calculations to GPU
-    private _calculateVertices(x: number, y: number): number[] {
+    private _calculateVertices(): number[] {
         if (this._clip === null) {
             throw new Error("Clip is not initialized");
         }
 
-        this._previousX = x;
-        this._previousY = y;
+        const u0 = this._clip.x / this._texture.texture.width;
+        const v0 = this._clip.y / this._texture.texture.height;
+        const u1 = (this._clip.x + this._clip.width) / this._texture.texture.width;
+        const v1 = (this._clip.y + this._clip.height) / this._texture.texture.height;
 
-        const width = this._texture.texture.width * this._transform.scale.x;
-        const height = this._texture.texture.height * this._transform.scale.y;
+        const halfWidth = this._clip.width * this._transform.scale.x * 0.5;
+        const halfHeight = this._clip.height * this._transform.scale.y * 0.5;
 
-        const u0 = this._clip.x / width;
-        const v0 = this._clip.y / height;
-        const u1 = (this._clip.x + this._clip.width) / width;
-        const v1 = (this._clip.y + this._clip.height) / height;
-
-        const halfWidth = this._clip.width * 0.5;
-        const halfHeight = this._clip.height * 0.5;
+        const { x, y } = this._transform.position;
 
         return [
             (x + halfWidth), (y + halfHeight), u1, v1, ...this._color, // top right
