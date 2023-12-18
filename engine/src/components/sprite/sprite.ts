@@ -66,16 +66,16 @@ export class Sprite implements ISprite {
         const u1 = (this._clip.x + this._clip.width) / this._texture.texture.width;
         const v1 = (this._clip.y + this._clip.height) / this._texture.texture.height;
 
-        const halfWidth = this._clip.width * this._transform.scale.x * 0.5;
-        const halfHeight = this._clip.height * this._transform.scale.y * 0.5;
+        const width = this._clip.width * this._transform.scale.x;
+        const height = this._clip.height * this._transform.scale.y;
 
         const { x, y } = this._transform.position;
 
         return [
-            (x + halfWidth), (y + halfHeight), u1, v1, ...this._color, // top right
-            (x + halfWidth), (y - halfHeight), u1, v0, ...this._color, // bottom right
-            (x - halfWidth), (y - halfHeight), u0, v0, ...this._color, // bottom left
-            (x - halfWidth), (y + halfHeight), u0, v1, ...this._color, // top left
+            x + width, y + height, u1, v1, ...this._color, // bottom right
+            x + width, y, u1, v0, ...this._color, // top right
+            x, y, u0, v0, ...this._color, // top left
+            x, y + height, u0, v1, ...this._color, // bottom left
         ];
     }
 }
