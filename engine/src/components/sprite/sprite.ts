@@ -86,7 +86,7 @@ export class Sprite implements ISprite {
         const v1 = (this._clip.y + this._clip.height) / height;
 
         const halfWidth = this._clip.width * 0.5;
-        const halfHeight = this._clip.width * 0.5;
+        const halfHeight = this._clip.height * 0.5;
 
         return [
             (x + halfWidth), (y + halfHeight), u1, v1, ...this._color, // top right
