@@ -1,7 +1,7 @@
 import { ensureExists } from "../../utils/existence-ensurer";
 import { type RGBA } from "../objects";
 import type { DrawData, SpritePipeline, Texture } from "./sprite-renderer-objects";
-import { type IViewPort } from "./view-port";
+import { type IOrthogonalProjection } from "../orthogonal-projection";
 import { type ISpriteRenderer } from "./isprite-renderer";
 import { BatchDrawCall } from "./batch-draw-call";
 import { spriteShader } from "./shaders/sprite-shader";
@@ -15,7 +15,7 @@ export class SpriteRenderer implements ISpriteRenderer {
     public readonly device: GPUDevice;
 
     private readonly _ctx: GPUCanvasContext;
-    private readonly _viewPort: IViewPort;
+    private readonly _orthogonalProjection: IOrthogonalProjection;
     private readonly _clearColor: RGBA;
 
     private _commandEncoder: GPUCommandEncoder | null = null;
@@ -32,16 +32,16 @@ export class SpriteRenderer implements ISpriteRenderer {
 
     private readonly _quadIndexBuffer: GPUBuffer;
 
-    public constructor(device: GPUDevice, ctx: GPUCanvasContext, viewPort: IViewPort, clearColor: RGBA) {
+    public constructor(device: GPUDevice, ctx: GPUCanvasContext, orthogonalProjection: IOrthogonalProjection, clearColor: RGBA) {
         this.device = device;
         this._ctx = ctx;
-        this._viewPort = viewPort;
+        this._orthogonalProjection = orthogonalProjection;
         this._clearColor = clearColor;
 
         this._quadIndexBuffer = this._createQuadIndexBuffer();
 
         this._projectionMatrixBuffer = this._createBuffer(
-            this._viewPort.projectionMatrix.values.byteLength,
+            this._orthogonalProjection.projectionMatrix.values.byteLength,
             GPUBufferUsage.UNIFORM,
         );
 
@@ -102,7 +102,7 @@ export class SpriteRenderer implements ISpriteRenderer {
             }],
         });
 
-        this.device.queue.writeBuffer(this._projectionMatrixBuffer, 0, this._viewPort.projectionMatrix.values);
+        this.device.queue.writeBuffer(this._projectionMatrixBuffer, 0, this._orthogonalProjection.projectionMatrix.values);
     }
 
     public finishDrawing(): void {
