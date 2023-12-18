@@ -30,16 +30,16 @@ describe("Sprite", () => {
 
         expect(vertices).toEqual([
             /* eslint-disable @stylistic/indent */
-            50, 125,
+            200, 150,
                 0.2, 0,
                 1, 0, 1, 1,
-            50, 75,
+            200, 100,
                 0.2, -0.1,
                 1, 0, 1, 1,
-            -250, 75,
+            -100, 100,
                 0.1, -0.1,
                 1, 0, 1, 1,
-            -250, 125,
+            -100, 150,
                 0.1, 0,
                 1, 0, 1, 1,
             /* eslint-enable @stylistic/indent */
