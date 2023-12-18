@@ -37,7 +37,7 @@ export class Scene implements IScene {
     public async createEntity(params: EntityParams): Promise<IEntity> {
         const entity: IEntity = new Entity(params);
 
-        await entity.__init(this._input, this._assetStorage, this._spriteRenderer);
+        await entity.__init(this._input, this._assetStorage);
         entity.start();
 
         this._entities.push(entity);
@@ -59,7 +59,11 @@ export class Scene implements IScene {
 
             this._spriteRenderer.beginDrawing();
             for (const entity of this._entities) {
-                entity.sprite?.draw();
+                if (entity.sprite === undefined) {
+                    continue;
+                }
+
+                this._spriteRenderer.queueDraw(entity.sprite.getDrawData());
             }
             this._spriteRenderer.finishDrawing();
         });

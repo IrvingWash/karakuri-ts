@@ -1,3 +1,8 @@
+export interface DrawData {
+    vertices: number[];
+    texture: Texture;
+}
+
 export interface Texture {
     id: string;
     texture: GPUTexture;

@@ -3,4 +3,4 @@ export { SpriteRenderer } from "./sprite-renderer";
 
 export { initializeGPU } from "./gpu-initializer";
 
-export type { Texture } from "./sprite-renderer-objects";
+export type { Texture, DrawData } from "./sprite-renderer-objects";

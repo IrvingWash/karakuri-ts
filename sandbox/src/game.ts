@@ -10,8 +10,6 @@ class MovableObject extends Behavior {
     private _speed: number = 500;
 
     public onUpdate(deltaTime: number): void {
-        this.transform.scale.add(new Vector2(0.01, 0.01));
-
         this._move(deltaTime);
     }
 
