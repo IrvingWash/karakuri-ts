@@ -1,6 +1,6 @@
 import type { IAssetStorage } from "../../core/asset-storage";
 import { RGBA } from "../../core/objects";
-import { ISpriteRenderer, Texture } from "../../core/sprite-renderer";
+import { Texture, DrawData } from "../../core/sprite-renderer";
 import { ensureExists } from "../../utils/existence-ensurer";
 import type { ITransform } from "../transform";
 import type { ISprite } from "./isprite";
@@ -19,7 +19,6 @@ export class Sprite implements ISprite {
     private readonly _color: RGBA;
     private readonly _antialias: boolean;
 
-    private _spriteRenderer!: ISpriteRenderer;
     private _transform!: ITransform;
 
     private _texture!: Texture;
@@ -34,11 +33,10 @@ export class Sprite implements ISprite {
         }
     }
 
-    public async __init(spriteRenderer: ISpriteRenderer, transform: ITransform, assetStorage: IAssetStorage): Promise<void> {
-        this._spriteRenderer = spriteRenderer;
+    public async __init(transform: ITransform, assetStorage: IAssetStorage): Promise<void> {
         this._transform = transform;
 
-        await assetStorage.addTexture(this._path, this._spriteRenderer.device, this._antialias);
+        await assetStorage.addTexture(this._path, this._antialias);
 
         this._texture = ensureExists(assetStorage.getTexture(this._path));
 
@@ -50,11 +48,11 @@ export class Sprite implements ISprite {
         };
     }
 
-    public draw(): void {
-        this._spriteRenderer.queueDraw(
-            this._calculateVertices(),
-            this._texture,
-        );
+    public getDrawData(): DrawData {
+        return {
+            vertices: this._calculateVertices(),
+            texture: this._texture,
+        };
     }
 
     // TODO: consider delegating some of these calculations to GPU

@@ -13,7 +13,7 @@ export class Karakuri implements IKarakuri {
     private readonly _canvas: ICanvas;
     private readonly _looper: ILooper;
     private readonly _input: IInput;
-    private readonly _assetStorage: IAssetStorage;
+    private _assetStorage!: IAssetStorage;
     private _spriteRenderer!: ISpriteRenderer;
 
     private readonly _clearColor: RGBA;
@@ -24,7 +24,6 @@ export class Karakuri implements IKarakuri {
         this._canvas = new Canvas(params?.canvasSize);
         this._looper = new Looper();
         this._input = new Input();
-        this._assetStorage = new AssetStorage();
 
         this._clearColor = params?.clearColor ?? [1, 1, 1, 1];
     }
@@ -34,6 +33,7 @@ export class Karakuri implements IKarakuri {
         const viewPort = new ViewPort(this._canvas.getSize());
 
         this._spriteRenderer = new SpriteRenderer(device, ctx, viewPort, this._clearColor);
+        this._assetStorage = new AssetStorage(device);
 
         this._isInitialized = true;
     }

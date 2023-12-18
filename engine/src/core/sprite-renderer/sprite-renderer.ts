@@ -1,6 +1,6 @@
 import { ensureExists } from "../../utils/existence-ensurer";
 import { type RGBA } from "../objects";
-import type { SpritePipeline, Texture } from "./sprite-renderer-objects";
+import type { DrawData, SpritePipeline, Texture } from "./sprite-renderer-objects";
 import { type IViewPort } from "./view-port";
 import { type ISpriteRenderer } from "./isprite-renderer";
 import { BatchDrawCall } from "./batch-draw-call";
@@ -57,10 +57,12 @@ export class SpriteRenderer implements ISpriteRenderer {
         });
     }
 
-    public queueDraw(vertices: number[], texture: Texture): void {
+    public queueDraw(drawData: DrawData): void {
         if (this._renderPassEncoder === null || this._commandEncoder === null) {
             return;
         }
+
+        const { texture, vertices } = drawData;
 
         if (this._currentTexture !== texture) {
             this._switchTexture(texture);
