@@ -3,7 +3,7 @@ import { type IInput, Input } from "../../core/input";
 import { type ILooper, Looper } from "../../core/looper";
 import { type RGBA } from "../../core/objects";
 import { type ISpriteRenderer, SpriteRenderer, initializeGPU } from "../../core/sprite-renderer";
-import { ViewPort } from "../../core/sprite-renderer/view-port";
+import { OrthogonalProjection } from "../../core/orthogonal-projection";
 import { AssetStorage, type IAssetStorage } from "../../core/asset-storage";
 import { type IScene, Scene } from "../scene";
 import type { IKarakuri } from "./ikarakuri";
@@ -30,9 +30,9 @@ export class Karakuri implements IKarakuri {
 
     public async init(): Promise<void> {
         const [device, ctx] = await initializeGPU(this._canvas.getContextGpu());
-        const viewPort = new ViewPort(this._canvas.getSize());
+        const orthogonalProjection = new OrthogonalProjection(this._canvas.getSize());
 
-        this._spriteRenderer = new SpriteRenderer(device, ctx, viewPort, this._clearColor);
+        this._spriteRenderer = new SpriteRenderer(device, ctx, orthogonalProjection, this._clearColor);
         this._assetStorage = new AssetStorage(device);
 
         this._isInitialized = true;

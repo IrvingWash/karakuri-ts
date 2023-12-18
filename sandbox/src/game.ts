@@ -35,9 +35,7 @@ export async function game(): Promise<void> {
 
     await level.createEntity({
         transform: new Transform({
-            position: new Vector2(
-                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
-            ),
+            position: new Vector2(0, 0),
             scale: new Vector2(2, 2),
         }),
         behavior: new MovableObject(),
