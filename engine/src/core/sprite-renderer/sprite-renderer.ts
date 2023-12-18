@@ -312,7 +312,7 @@ export class SpriteRenderer implements ISpriteRenderer {
                     format: navigator.gpu.getPreferredCanvasFormat(),
                     blend: {
                         color: {
-                            srcFactor: "one",
+                            srcFactor: "src-alpha",
                             dstFactor: "one-minus-src-alpha",
                             operation: "add",
                         },
