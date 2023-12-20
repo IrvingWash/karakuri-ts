@@ -1,9 +1,8 @@
 import type { IAssetStorage } from "../../core/asset-storage";
 import { RGBA } from "../../core/objects";
-import { Texture } from "../../core/sprite-renderer";
+import type { ISprite, Texture } from "../../core/sprite-renderer";
 import { Clip } from "../../core/sprite-renderer";
 import { ensureExists } from "../../utils/existence-ensurer";
-import type { ISprite } from "./isprite";
 
 interface SpriteParams {
     path: string;

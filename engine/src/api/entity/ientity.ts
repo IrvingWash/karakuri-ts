@@ -1,9 +1,9 @@
 import type { Behavior } from "../../components/behavior";
 import type { IInput } from "../../core/input";
-import type { ISprite } from "../../components/sprite";
 import type { IAssetStorage } from "../../core/asset-storage";
 import { Geometry, type RectangleInitParams } from "../../core/geometry";
 import type { ITransform } from "../../core/transform";
+import type { ISprite } from "../../core/sprite-renderer";
 
 export interface IEntity {
     readonly transform: ITransform;

@@ -2,10 +2,10 @@ import type { IEntity } from "./ientity";
 import type { IInput } from "../../core/input";
 import { Transform } from "../../components/transform";
 import { Behavior } from "../../components/behavior";
-import type { ISprite } from "../../components/sprite";
 import type { IAssetStorage } from "../../core/asset-storage";
 import type { ITransform } from "../../core/transform";
 import { Geometry, Rectangle, RectangleInitParams } from "../../core/geometry";
+import { ISprite } from "../../core/sprite-renderer";
 
 export interface EntityParams {
     transform?: ITransform;

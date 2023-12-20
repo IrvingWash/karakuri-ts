@@ -1,6 +1,6 @@
 import { ensureExists } from "../../utils/existence-ensurer";
 import { type RGBA } from "../objects";
-import type { DrawData, SpritePipeline, Texture } from "./sprite-renderer-objects";
+import type { ISprite, SpritePipeline, Texture } from "./sprite-renderer-objects";
 import { type IOrthogonalProjection } from "../orthogonal-projection";
 import { type ISpriteRenderer } from "./isprite-renderer";
 import { BatchDrawCall } from "./batch-draw-call";
@@ -57,35 +57,35 @@ export class SpriteRenderer implements ISpriteRenderer {
         });
     }
 
-    private _createVertices(drawData: DrawData): number[] {
-        const u0 = drawData.clip.x / drawData.texture.texture.width;
-        const v0 = drawData.clip.y / drawData.texture.texture.height;
-        const u1 = (drawData.clip.x + drawData.clip.width) / drawData.texture.texture.width;
-        const v1 = (drawData.clip.y + drawData.clip.height) / drawData.texture.texture.height;
+    private _createVertexData(sprite: ISprite, vertices: number[]): number[] {
+        const u0 = sprite.clip.x / sprite.texture.texture.width;
+        const v0 = sprite.clip.y / sprite.texture.texture.height;
+        const u1 = (sprite.clip.x + sprite.clip.width) / sprite.texture.texture.width;
+        const v1 = (sprite.clip.y + sprite.clip.height) / sprite.texture.texture.height;
 
         const [
             x0, y0,
             x1, y1,
             x2, y2,
             x3, y3,
-        ] = drawData.vertices as [number, number, number, number, number, number, number, number];
+        ] = vertices as [number, number, number, number, number, number, number, number];
 
         return [
-            x2, y2, u1, v1, ...drawData.color, // bottom right
-            x1, y1, u1, v0, ...drawData.color, // top right
-            x0, y0, u0, v0, ...drawData.color, // top left
-            x3, y3, u0, v1, ...drawData.color, // bottom left
+            x2, y2, u1, v1, ...sprite.color, // bottom right
+            x1, y1, u1, v0, ...sprite.color, // top right
+            x0, y0, u0, v0, ...sprite.color, // top left
+            x3, y3, u0, v1, ...sprite.color, // bottom left
         ];
     }
 
-    public queueDraw(drawData: DrawData): void {
+    public queueDraw(sprite: ISprite, vertices: number[]): void {
         if (this._renderPassEncoder === null || this._commandEncoder === null) {
             return;
         }
 
-        const vertices = this._createVertices(drawData);
+        const vertexData = this._createVertexData(sprite, vertices);
 
-        const { texture } = drawData;
+        const { texture } = sprite;
 
         if (this._currentTexture !== texture) {
             this._switchTexture(texture);
@@ -94,7 +94,7 @@ export class SpriteRenderer implements ISpriteRenderer {
         const texturePipeline = ensureExists(this._pipelinesPerTexture.get(texture.id));
         const batchDrawCall = this._getOrCreateBatchDrawCall(texture, texturePipeline);
 
-        this._addVerticesIntoBatchDrawCall(batchDrawCall, vertices);
+        this._addVerticesIntoBatchDrawCall(batchDrawCall, vertexData);
 
         batchDrawCall.incrementInstanceCount();
 
