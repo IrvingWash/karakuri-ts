@@ -1,5 +1,5 @@
 import { Vector2, type IVector2 } from "../../math/vector2";
-import type { ITransform } from "./itransform";
+import type { ITransform } from "../../core/transform";
 
 export interface TransformParams {
     position?: IVector2;

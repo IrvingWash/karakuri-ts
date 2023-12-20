@@ -63,7 +63,10 @@ export class Scene implements IScene {
                     continue;
                 }
 
-                this._spriteRenderer.queueDraw(entity.sprite.getDrawData());
+                this._spriteRenderer.queueDraw(
+                    entity.sprite,
+                    entity.geometry.worldVertices,
+                );
             }
             this._spriteRenderer.finishDrawing();
         });

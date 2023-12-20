@@ -4,6 +4,7 @@ import {
     Transform,
     Vector2,
     Sprite,
+    Trigonometry,
 } from "karakuri";
 
 class MovableObject extends Behavior {
@@ -37,6 +38,7 @@ export async function game(): Promise<void> {
         transform: new Transform({
             position: new Vector2(0, 0),
             scale: new Vector2(2, 2),
+            rotation: new Vector2(Trigonometry.degToRad(90), 0),
         }),
         behavior: new MovableObject(),
         sprite: new Sprite({ path: "assets/ship-blue.png" }),
