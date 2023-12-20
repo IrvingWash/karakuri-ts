@@ -1,8 +1,11 @@
 import type { IAssetStorage } from "../../core/asset-storage";
-import { DrawData } from "../../core/sprite-renderer";
-import type { ITransform } from "../transform";
+import type { RGBA } from "../../core/objects";
+import type { Clip, Texture } from "../../core/sprite-renderer";
 
 export interface ISprite {
-    __init(transform: ITransform, assetStorage: IAssetStorage): Promise<void>;
-    getDrawData(): DrawData;
+    readonly color: RGBA;
+    readonly clip: Clip;
+    readonly texture: Texture;
+
+    __init(assetStorage: IAssetStorage): Promise<void>;
 }

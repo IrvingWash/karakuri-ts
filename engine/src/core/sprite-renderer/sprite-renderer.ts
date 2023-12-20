@@ -57,12 +57,35 @@ export class SpriteRenderer implements ISpriteRenderer {
         });
     }
 
+    private _createVertices(drawData: DrawData): number[] {
+        const u0 = drawData.clip.x / drawData.texture.texture.width;
+        const v0 = drawData.clip.y / drawData.texture.texture.height;
+        const u1 = (drawData.clip.x + drawData.clip.width) / drawData.texture.texture.width;
+        const v1 = (drawData.clip.y + drawData.clip.height) / drawData.texture.texture.height;
+
+        const [
+            x0, y0,
+            x1, y1,
+            x2, y2,
+            x3, y3,
+        ] = drawData.vertices as [number, number, number, number, number, number, number, number];
+
+        return [
+            x2, y2, u1, v1, ...drawData.color, // bottom right
+            x1, y1, u1, v0, ...drawData.color, // top right
+            x0, y0, u0, v0, ...drawData.color, // top left
+            x3, y3, u0, v1, ...drawData.color, // bottom left
+        ];
+    }
+
     public queueDraw(drawData: DrawData): void {
         if (this._renderPassEncoder === null || this._commandEncoder === null) {
             return;
         }
 
-        const { texture, vertices } = drawData;
+        const vertices = this._createVertices(drawData);
+
+        const { texture } = drawData;
 
         if (this._currentTexture !== texture) {
             this._switchTexture(texture);

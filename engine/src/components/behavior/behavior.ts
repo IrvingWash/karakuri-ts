@@ -1,7 +1,7 @@
-import type { ITransform } from "../transform";
 import type { IInput } from "../../core/input";
 import type { IEntity } from "../../api/entity";
 import type { ISprite } from "../sprite";
+import { ITransform } from "../../core/transform";
 
 interface BehaviorParams {
     transform: ITransform;
