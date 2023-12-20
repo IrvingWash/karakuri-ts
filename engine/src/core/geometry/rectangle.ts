@@ -12,6 +12,8 @@ export class Rectangle extends Geometry {
     private _originalWidth!: number;
     private _originalHeight!: number;
 
+    private _isInitialized: boolean = false;
+
     public constructor(transform: ITransform) {
         super(transform);
     }
@@ -19,10 +21,16 @@ export class Rectangle extends Geometry {
     public override __init(params: RectangleInitParams): void {
         this._originalWidth = params.originalWidth ?? 0;
         this._originalHeight = params.originalHeight ?? 0;
+
+        this._isInitialized = true;
     }
 
     // TODO: Need to optimize these calculations
     public override getWorldVertices(): number[] {
+        if (!this._isInitialized) {
+            throw new Error("Rectangle must be initialized before usage");
+        }
+
         const { x, y } = this._transform.position;
 
         const width = this._originalWidth * this._transform.scale.x;
