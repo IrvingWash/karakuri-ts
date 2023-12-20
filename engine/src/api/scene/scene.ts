@@ -65,7 +65,7 @@ export class Scene implements IScene {
 
                 this._spriteRenderer.queueDraw(
                     entity.sprite,
-                    entity.geometry.getWorldVertices(),
+                    entity.geometry.worldVertices,
                 );
             }
             this._spriteRenderer.finishDrawing();

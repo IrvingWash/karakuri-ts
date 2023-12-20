@@ -47,6 +47,7 @@ export class Entity implements IEntity {
 
     public update(deltaTime: number): void {
         this.behavior?.onUpdate?.(deltaTime);
+        this.geometry.updateWorldVertices();
     }
 
     public reactToCollision(other: IEntity): void {

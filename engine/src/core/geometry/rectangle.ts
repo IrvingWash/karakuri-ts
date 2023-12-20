@@ -8,7 +8,8 @@ export interface RectangleInitParams {
 }
 
 export class Rectangle extends Geometry {
-    // TODO: Add `isInitialized` field to all the classes with bangs
+    public override worldVertices: number[] = [];
+
     private _originalWidth!: number;
     private _originalHeight!: number;
 
@@ -26,7 +27,7 @@ export class Rectangle extends Geometry {
     }
 
     // TODO: Need to optimize these calculations
-    public override getWorldVertices(): number[] {
+    public override updateWorldVertices(): void {
         if (!this._isInitialized) {
             throw new Error("Rectangle must be initialized before usage");
         }
@@ -43,7 +44,7 @@ export class Rectangle extends Geometry {
         const v2 = new Vector2(x + width, y + height).rotateAt(this._origin, rotation);
         const v3 = new Vector2(x, y + height).rotateAt(this._origin, rotation);
 
-        return [
+        this.worldVertices = [
             v0.x, v0.y, // top left
             v1.x, v1.y, // top right
             v2.x, v2.y, // bottom right

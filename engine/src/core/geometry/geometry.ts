@@ -2,6 +2,8 @@ import { IVector2 } from "../../math/vector2";
 import { ITransform } from "../transform";
 
 export abstract class Geometry<InitParams = {}> {
+    public abstract worldVertices: number[];
+
     protected _transform: ITransform;
     protected _origin: IVector2;
 
@@ -11,5 +13,5 @@ export abstract class Geometry<InitParams = {}> {
     }
 
     public abstract __init(params: InitParams): void;
-    public abstract getWorldVertices(): number[];
+    public abstract updateWorldVertices(): void;
 }
