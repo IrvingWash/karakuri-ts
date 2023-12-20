@@ -1,2 +1,2 @@
 export { Geometry } from "./geometry";
-export { Rectangle, type RectangleInitParams } from "./rectangle";
+export { Rectangle } from "./rectangle";

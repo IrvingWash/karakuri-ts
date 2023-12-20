@@ -2,7 +2,8 @@ import { Vector2 } from "../../math/vector2";
 import { ITransform } from "../transform";
 import { Geometry } from "./geometry";
 
-export interface RectangleInitParams {
+interface RectangleParams {
+    transform: ITransform;
     originalWidth?: number;
     originalHeight?: number;
 }
@@ -13,25 +14,17 @@ export class Rectangle extends Geometry {
     private _originalWidth!: number;
     private _originalHeight!: number;
 
-    private _isInitialized: boolean = false;
+    public constructor(params: RectangleParams) {
+        super(params.transform);
 
-    public constructor(transform: ITransform) {
-        super(transform);
-    }
-
-    public override __init(params: RectangleInitParams): void {
         this._originalWidth = params.originalWidth ?? 0;
         this._originalHeight = params.originalHeight ?? 0;
 
-        this._isInitialized = true;
+        this.updateWorldVertices();
     }
 
     // TODO: Need to optimize these calculations
     public override updateWorldVertices(): void {
-        if (!this._isInitialized) {
-            throw new Error("Rectangle must be initialized before usage");
-        }
-
         const { x, y } = this._transform.position;
 
         const width = this._originalWidth * this._transform.scale.x;
