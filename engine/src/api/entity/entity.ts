@@ -4,8 +4,8 @@ import { Transform } from "../../components/transform";
 import { Behavior } from "../../components/behavior";
 import type { IAssetStorage } from "../../core/asset-storage";
 import type { ITransform } from "../../core/transform";
-import { Geometry, Rectangle, RectangleInitParams } from "../../core/geometry";
-import { ISprite } from "../../core/sprite-renderer";
+import { Geometry, Rectangle } from "../../core/geometry";
+import type { ISprite } from "../../core/sprite-renderer";
 
 export interface EntityParams {
     transform?: ITransform;
@@ -15,13 +15,12 @@ export interface EntityParams {
 
 export class Entity implements IEntity {
     public readonly transform: ITransform;
-    public readonly geometry: Geometry<RectangleInitParams>;
+    public geometry!: Geometry;
     public readonly behavior?: Behavior;
     public readonly sprite?: ISprite;
 
     public constructor(params: EntityParams) {
         this.transform = params.transform ?? new Transform();
-        this.geometry = new Rectangle(this.transform);
         this.behavior = params.behavior;
         this.sprite = params.sprite;
     }
@@ -29,7 +28,8 @@ export class Entity implements IEntity {
     public async __init(input: IInput, assetStorage: IAssetStorage): Promise<void> {
         await this.sprite?.__init(assetStorage);
 
-        this.geometry.__init({
+        this.geometry = new Rectangle({
+            transform: this.transform,
             originalWidth: this.sprite?.clip.width,
             originalHeight: this.sprite?.clip.height,
         });
