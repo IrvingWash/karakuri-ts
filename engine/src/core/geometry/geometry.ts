@@ -1,5 +1,5 @@
 import { IVector2 } from "../../math/vector2";
-import { ITransform } from "../transform";
+import { ITransform } from "../objects";
 
 export abstract class Geometry {
     public abstract worldVertices: number[];

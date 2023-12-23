@@ -1,8 +1,9 @@
 import type { IAssetStorage } from "../../core/asset-storage";
 import type { IInput } from "../../core/input";
 import type { ILooper } from "../../core/looper";
+import type { EntityParams, IEntity } from "../../core/objects";
 import type { ISpriteRenderer } from "../../core/sprite-renderer";
-import { Entity, type IEntity, type EntityParams } from "../entity";
+import { Entity } from "../entity";
 import type { IScene } from "./iscene";
 
 interface SceneParams {

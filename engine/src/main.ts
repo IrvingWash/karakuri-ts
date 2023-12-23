@@ -1,8 +1,8 @@
 export { Karakuri, type EngineConfiguration } from "./api/karakuri";
-export type { IEntity, EntityParams } from "./api/entity";
+export type { IEntity, EntityParams } from "./core/objects";
 
 export { Transform } from "./components/transform";
-export type { ITransform } from "./core/transform";
+export type { ITransform } from "./core/objects";
 export { Behavior } from "./components/behavior";
 export { Sprite } from "./components/sprite";
 export type { Clip } from "./core/sprite-renderer";

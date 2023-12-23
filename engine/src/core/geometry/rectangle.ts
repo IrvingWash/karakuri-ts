@@ -1,5 +1,5 @@
 import { Vector2 } from "../../math/vector2";
-import { ITransform } from "../transform";
+import { ITransform } from "../objects";
 import { Geometry } from "./geometry";
 
 interface RectangleParams {

@@ -1,4 +1,4 @@
-import type { IEntity, EntityParams } from "../entity";
+import type { EntityParams, IEntity } from "../../core/objects";
 
 export interface IScene {
     createEntity(params: EntityParams): Promise<IEntity>;
