@@ -88,7 +88,9 @@ export class Particle implements IParticle {
 
     public setMass(mass: number): void {
         if (mass === 0) {
-            throw new Error("Impossible to set 0 mass to particle");
+            this._inverseMass = -1;
+
+            return;
         }
 
         this._inverseMass = 1 / mass;

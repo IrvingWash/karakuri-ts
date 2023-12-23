@@ -5,13 +5,21 @@ import {
     Vector2,
     Sprite,
     Trigonometry,
+    IParticle,
+    Particle,
 } from "karakuri";
 
 class MovableObject extends Behavior {
     private _speed: number = 500;
+    private _particle!: IParticle;
+
+    public onStart(): void {
+        this._particle = new Particle(this.transform.position);
+    }
 
     public onUpdate(deltaTime: number): void {
         this._move(deltaTime);
+        this._particle.integrate(deltaTime);
     }
 
     private _move(time: number): void {
@@ -20,7 +28,7 @@ class MovableObject extends Behavior {
         const up = this.input.isKeyDown("w") ? -1 : 0;
         const down = this.input.isKeyDown("s") ? 1 : 0;
 
-        this.transform.position.add(new Vector2(
+        this._particle.addForce(new Vector2(
             (left || right) * this._speed * time,
             (up || down) * this._speed * time,
         ));
