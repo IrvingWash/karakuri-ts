@@ -11,4 +11,4 @@ export { Trigonometry } from "./math/trigonometry";
 export { Vector2, type IVector2 } from "./math/vector2";
 
 // TODO: Delete this export when Particle or RigidBody component is available.
-export { Particle, type IParticle } from "./physics/particle";
+export { Particle, type IParticle, ParticleForceGenerator } from "./physics/particle";
