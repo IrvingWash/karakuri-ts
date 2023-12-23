@@ -1,15 +1,8 @@
 import type { IInput } from "../../core/input";
-import type { IEntity } from "../../api/entity";
-import type { ITransform } from "../../core/transform";
 import type { ISprite } from "../../core/sprite-renderer";
+import type { BehaviorParams, IBehavior, IEntity, ITransform } from "../../core/objects";
 
-interface BehaviorParams {
-    transform: ITransform;
-    input: IInput;
-    sprite?: ISprite,
-}
-
-export abstract class Behavior {
+export abstract class Behavior implements IBehavior {
     public transform!: ITransform;
     public input!: IInput;
     public sprite?: ISprite;

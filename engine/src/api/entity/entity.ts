@@ -1,17 +1,10 @@
-import type { IEntity } from "./ientity";
 import type { IInput } from "../../core/input";
 import { Transform } from "../../components/transform";
 import { Behavior } from "../../components/behavior";
 import type { IAssetStorage } from "../../core/asset-storage";
-import type { ITransform } from "../../core/transform";
 import { Geometry, Rectangle } from "../../core/geometry";
 import type { ISprite } from "../../core/sprite-renderer";
-
-export interface EntityParams {
-    transform?: ITransform;
-    behavior?: Behavior;
-    sprite?: ISprite;
-}
+import type { EntityParams, IEntity, ITransform } from "../../core/objects";
 
 export class Entity implements IEntity {
     public readonly transform: ITransform;
