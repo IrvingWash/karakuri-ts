@@ -8,6 +8,7 @@ import {
     IParticle,
     Particle,
 } from "karakuri";
+import { ParticleForceGenerator } from "karakuri";
 
 class MovableObject extends Behavior {
     private _speed: number = 500;
@@ -19,6 +20,8 @@ class MovableObject extends Behavior {
 
     public onUpdate(deltaTime: number): void {
         this._move(deltaTime);
+        ParticleForceGenerator.drag(this._particle, 2);
+        ParticleForceGenerator.gravity(this._particle, new Vector2(10, 10));
         this._particle.integrate(deltaTime);
     }
 
