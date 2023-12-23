@@ -10,5 +10,5 @@ export type { Clip, ISprite } from "./core/sprite-renderer";
 export { Trigonometry } from "./math/trigonometry";
 export { Vector2, type IVector2 } from "./math/vector2";
 
-// TODO: Delete this import ASAP.
+// TODO: Delete this export when Particle or RigidBody component is available.
 export { Particle, type IParticle } from "./physics/particle";
