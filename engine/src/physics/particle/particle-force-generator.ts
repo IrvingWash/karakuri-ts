@@ -29,4 +29,36 @@ export class ParticleForceGenerator {
 
         particle.addForce(dragDirection.scale(dragMagnitude));
     }
+
+    public static spring(particle: IParticle, other: IParticle, springConstant: number, restLength: number): void {
+        if (!particle.hasFiniteMass() && !other.hasFiniteMass()) {
+            return;
+        }
+
+        const d = particle.getPosition().toSubtracted(other.getPosition());
+
+        const displacement = d.getMagnitude() - restLength;
+        const springDirection = d.toNormalized();
+        const springMagnitude = displacement * -springConstant;
+
+        const force = springDirection.scale(springMagnitude);
+
+        particle.addForce(force);
+    }
+
+    public static anchoredSpring(particle: IParticle, anchor: IVector2, springConstant: number, restLength: number): void {
+        if (!particle.hasFiniteMass()) {
+            return;
+        }
+
+        const d = particle.getPosition().toSubtracted(anchor);
+
+        const displacement = d.getMagnitude() - restLength;
+        const springDirection = d.toNormalized();
+        const springMagnitude = displacement * -springConstant;
+
+        const force = springDirection.scale(springMagnitude);
+
+        particle.addForce(force);
+    }
 }

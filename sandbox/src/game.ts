@@ -1,125 +1,130 @@
 import {
     Karakuri,
     Behavior,
-    Transform,
     Vector2,
     Sprite,
-    Trigonometry,
     IParticle,
     Particle,
+    ParticleForceGenerator,
+    Transform,
+    IEntity,
+    IVector2,
 } from "karakuri";
-import { ParticleForceGenerator } from "karakuri";
 
-class MovableObject extends Behavior {
-    private _speed: number = 500;
+import circle from "../assets/circle.png";
+import square from "../assets/square.png";
+
+class Ball extends Behavior {
     private _particle!: IParticle;
+    private _anchor: IVector2 | null = null;
+    private _isHolding: boolean = false;
 
     public onStart(): void {
-        this._particle = new Particle(this.transform.position);
+        this._particle = new Particle(this.transform.position, 0.1);
+
+        addEventListener("mousedown", () => {
+            this._isHolding = true;
+        });
+
+        addEventListener("mouseup", () => {
+            this._isHolding = false;
+        });
+
+        addEventListener("mousemove", (event) => {
+            if (!this._isHolding) {
+                return;
+            }
+
+            this.transform.position.add(
+                new Vector2(
+                    event.clientX - this.transform.position.x,
+                    event.clientY - this.transform.position.y,
+                ),
+            );
+        });
     }
 
     public onUpdate(deltaTime: number): void {
-        this._move(deltaTime);
-        ParticleForceGenerator.drag(this._particle, 2);
-        ParticleForceGenerator.gravity(this._particle, new Vector2(10, 10));
+        if (this._anchor === null) {
+            return;
+        }
+
+        ParticleForceGenerator.anchoredSpring(this._particle, this._anchor, 5, 300),
+        ParticleForceGenerator.gravity(this._particle, new Vector2(0, 500));
+        ParticleForceGenerator.drag(this._particle, 0.003);
+
         this._particle.integrate(deltaTime);
     }
 
-    private _move(time: number): void {
-        const left = this.input.isKeyDown("a") ? -1 : 0;
-        const right = this.input.isKeyDown("d") ? 1 : 0;
-        const up = this.input.isKeyDown("w") ? -1 : 0;
-        const down = this.input.isKeyDown("s") ? 1 : 0;
+    public setAnchor(anchor: IVector2): void {
+        this._anchor = anchor;
+    }
+}
 
-        this._particle.addForce(new Vector2(
-            (left || right) * this._speed * time,
-            (up || down) * this._speed * time,
-        ));
+class Rope extends Behavior {
+    private _ball: IEntity | null = null;
+    private _anchor: IEntity | null = null;
+
+    public setBallAndAnchor(ball: IEntity, anchor: IEntity): void {
+        this._ball = ball;
+        this._anchor = anchor;
+    }
+
+    public onUpdate(_deltaTime: number): void {
+        if (this._ball === null || this._anchor === null) {
+            return;
+        }
+
+        const ropeScale = new Vector2(this.transform.scale.x, this._ball.transform.position.y / 100);
+
+        this.transform.scale = ropeScale;
     }
 }
 
 export async function game(): Promise<void> {
-    const engine = new Karakuri({ clearColor: [0.8, 0.8, 0.8, 1] });
+    const engine = new Karakuri({ clearColor: [0.7, 0.7, 0.7, 1] });
     await engine.init();
 
     const level = engine.createScene();
     const canvasSize = engine.getCanvasSize();
 
-    await level.createEntity({
+    const anchor = await level.createEntity({
         transform: new Transform({
-            position: new Vector2(0, 0),
-            scale: new Vector2(2, 2),
-            rotation: new Vector2(Trigonometry.degToRad(90), 0),
+            position: new Vector2(canvasSize.width / 2, 0),
         }),
-        behavior: new MovableObject(),
-        sprite: new Sprite({ path: "assets/ship-blue.png" }),
-    });
-
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(
-                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
-            ),
-        }),
-        behavior: new MovableObject(),
-        sprite: new Sprite({ path: "assets/circle.png" }),
-    });
-
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(
-                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
-            ),
-        }),
-        behavior: new MovableObject(),
-        sprite: new Sprite({ path: "assets/ship-blue.png" }),
-    });
-
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(
-                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
-            ),
-        }),
-        behavior: new MovableObject(),
-        sprite: new Sprite({ path: "assets/circle.png" }),
-    });
-
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(
-                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
-            ),
-            scale: new Vector2(3, 3),
-        }),
-        behavior: new MovableObject(),
         sprite: new Sprite({
-            path: "assets/sheet.png",
-            clip: {
-                x: 444,
-                y: 0,
-                width: 91,
-                height: 91,
-            },
+            path: circle,
+            color: [0, 1, 0, 1],
         }),
     });
 
+    const ballBehavior = new Ball();
+    ballBehavior.setAnchor(anchor.transform.position);
+
+    const ball = await level.createEntity({
+        transform: new Transform({
+            position: new Vector2(anchor.transform.position.x, 100),
+        }),
+        sprite: new Sprite({
+            path: circle,
+            color: [1, 0, 0, 1],
+        }),
+        behavior: ballBehavior,
+    });
+
+    const ropeBehavior = new Rope();
+    ropeBehavior.setBallAndAnchor(ball, anchor);
+
     await level.createEntity({
         transform: new Transform({
-            position: new Vector2(
-                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
-            ),
+            position: new Vector2(anchor.transform.position.x + (anchor.sprite?.clip.width ?? 0) / 2, (anchor.sprite?.clip.height ?? 0) / 2),
+            scale: new Vector2(0.1, 1),
         }),
-        behavior: new MovableObject(),
         sprite: new Sprite({
-            path: "assets/sheet.png",
-            clip: {
-                x: 778,
-                y: 527,
-                width: 31,
-                height: 30,
-            },
+            path: square,
+            color: [0, 0, 1, 1],
         }),
+        behavior: ropeBehavior,
     });
 
     level.start();
