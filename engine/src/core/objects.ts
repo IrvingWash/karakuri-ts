@@ -7,9 +7,9 @@ import { ISprite } from "./sprite-renderer";
 export type RGBA = [number, number, number, number];
 
 export interface ITransform {
-    readonly position: IVector2;
-    readonly rotation: IVector2;
-    readonly scale: IVector2;
+    position: IVector2;
+    rotation: IVector2;
+    scale: IVector2;
 }
 
 export interface IEntity {

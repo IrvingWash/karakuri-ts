@@ -1,14 +1,17 @@
 import {
     Karakuri,
     Behavior,
-    Transform,
     Vector2,
     Sprite,
-    Trigonometry,
     IParticle,
     Particle,
+    ParticleForceGenerator,
+    Transform,
+    IEntity,
 } from "karakuri";
-import { ParticleForceGenerator } from "karakuri";
+
+import circle from "../assets/circle.png";
+import square from "../assets/square.png";
 
 class MovableObject extends Behavior {
     private _speed: number = 500;
@@ -20,8 +23,9 @@ class MovableObject extends Behavior {
 
     public onUpdate(deltaTime: number): void {
         this._move(deltaTime);
-        ParticleForceGenerator.drag(this._particle, 2);
-        ParticleForceGenerator.gravity(this._particle, new Vector2(10, 10));
+        ParticleForceGenerator.anchoredSpring(this._particle, new Vector2(), 10, 50);
+        ParticleForceGenerator.gravity(this._particle, new Vector2(0, 500));
+        ParticleForceGenerator.drag(this._particle, 0.003);
         this._particle.integrate(deltaTime);
     }
 
@@ -38,88 +42,64 @@ class MovableObject extends Behavior {
     }
 }
 
+class Rope extends Behavior {
+    private _anchor: IEntity | null = null;
+    private _ball: IEntity | null = null;
+
+    public onUpdate(_deltaTime: number): void {
+        if (this._anchor === null || this._ball === null) {
+            return;
+        }
+
+        const scale = new Vector2(this.transform.scale.x, this._ball.transform.position.y / 100);
+
+        this.transform.scale = scale;
+    }
+
+    public setAnchorAndBall(anchor: IEntity, ball: IEntity): void {
+        this._anchor = anchor;
+        this._ball = ball;
+    }
+}
+
 export async function game(): Promise<void> {
-    const engine = new Karakuri({ clearColor: [0.8, 0.8, 0.8, 1] });
+    const engine = new Karakuri({ clearColor: [0.7, 0.7, 0.7, 1] });
     await engine.init();
 
     const level = engine.createScene();
-    const canvasSize = engine.getCanvasSize();
 
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(0, 0),
-            scale: new Vector2(2, 2),
-            rotation: new Vector2(Trigonometry.degToRad(90), 0),
-        }),
-        behavior: new MovableObject(),
-        sprite: new Sprite({ path: "assets/ship-blue.png" }),
-    });
-
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(
-                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
-            ),
-        }),
-        behavior: new MovableObject(),
-        sprite: new Sprite({ path: "assets/circle.png" }),
-    });
-
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(
-                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
-            ),
-        }),
-        behavior: new MovableObject(),
-        sprite: new Sprite({ path: "assets/ship-blue.png" }),
-    });
-
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(
-                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
-            ),
-        }),
-        behavior: new MovableObject(),
-        sprite: new Sprite({ path: "assets/circle.png" }),
-    });
-
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(
-                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
-            ),
-            scale: new Vector2(3, 3),
-        }),
+    const ball = await level.createEntity({
         behavior: new MovableObject(),
         sprite: new Sprite({
-            path: "assets/sheet.png",
-            clip: {
-                x: 444,
-                y: 0,
-                width: 91,
-                height: 91,
-            },
+            path: circle,
+            color: [1, 0, 0, 1],
         }),
     });
 
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(
-                canvasSize.width * Math.random(), canvasSize.height * Math.random(),
-            ),
-        }),
-        behavior: new MovableObject(),
+    const anchor = await level.createEntity({
         sprite: new Sprite({
-            path: "assets/sheet.png",
-            clip: {
-                x: 778,
-                y: 527,
-                width: 31,
-                height: 30,
-            },
+            path: circle,
+            color: [0, 0, 1, 1],
         }),
+        transform: new Transform({
+            position: new Vector2(25, 0),
+            scale: new Vector2(0.5, 0.5),
+        }),
+    });
+
+    const ropeBehavior = new Rope();
+    ropeBehavior.setAnchorAndBall(anchor, ball);
+
+    await level.createEntity({
+        sprite: new Sprite({
+            path: square,
+            color: [0, 1, 0, 1],
+        }),
+        transform: new Transform({
+            position: new Vector2(45, 50),
+            scale: new Vector2(0.1, 1),
+        }),
+        behavior: ropeBehavior,
     });
 
     level.start();
