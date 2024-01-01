@@ -3,6 +3,29 @@ import { describe, expect, it } from "@jest/globals";
 import { IParticlePhysics, ParticleForceGenerator, ParticlePhysics } from "../../../src/physics/particle";
 import { IVector2, Vector2 } from "../../../src/math/vector2";
 
+describe("ParticleForceGenerator: Gravitation force", () => {
+    const sunPosition = new Vector2(1000, 1000);
+
+    it("should generate gravitation force", () => {
+        const sun: IParticlePhysics = new ParticlePhysics({
+            gravity: new Vector2(),
+            mass: 1000,
+            position: sunPosition.clone(),
+        });
+
+        const earth: IParticlePhysics = new ParticlePhysics({
+            gravity: new Vector2(),
+            mass: 1,
+        });
+
+        const force = ParticleForceGenerator.gravitationForce(earth, sun, 10, 100, 300);
+
+        expect(force).toEqual(new Vector2(23.570226039551585, 23.570226039551585));
+        expect(sun.getVelocity()).toEqual(new Vector2());
+        expect(sun.getPosition()).toEqual(sunPosition.clone());
+    });
+});
+
 describe("ParticleForceGenerator: Drag force", () => {
     it("should generate drag force", () => {
         const particle: IParticlePhysics = new ParticlePhysics({});
