@@ -4,14 +4,14 @@ import { type IParticle } from "./iparticle";
 
 interface ParticleParams {
     mass?: number;
-    gravity: number;
+    gravity?: IVector2;
 }
 
 export class Particle implements IParticle {
     private _particlePhysics: IParticlePhysics | null = null;
 
     private readonly _mass?: number;
-    private readonly _gravity?: number;
+    private readonly _gravity?: IVector2;
 
     public constructor(params: ParticleParams) {
         this._mass = params.mass;

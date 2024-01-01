@@ -5,7 +5,7 @@ interface ParticlePhysicsParams {
     position?: IVector2;
     velocity?: IVector2;
     mass?: number;
-    gravity?: number;
+    gravity?: IVector2;
 }
 
 export class ParticlePhysics implements IParticlePhysics {
@@ -13,7 +13,7 @@ export class ParticlePhysics implements IParticlePhysics {
     private _velocity: IVector2;
     private _mass: number;
     private _inverseMass: number;
-    private _gravity: number;
+    private _gravity: IVector2;
 
     private _accumulatedForce: IVector2;
 
@@ -21,7 +21,7 @@ export class ParticlePhysics implements IParticlePhysics {
         this._position = params.position ?? new Vector2();
         this._velocity = params.velocity ?? new Vector2();
         this._mass = params.mass ?? 0;
-        this._gravity = params.gravity ?? 10;
+        this._gravity = params.gravity ?? new Vector2(0, 10);
         this._inverseMass = this._calculateInverseMass(this._mass);
 
         this._accumulatedForce = new Vector2();
@@ -49,7 +49,7 @@ export class ParticlePhysics implements IParticlePhysics {
         return this._mass;
     }
 
-    public getGravity(): number {
+    public getGravity(): IVector2 {
         return this._gravity;
     }
 

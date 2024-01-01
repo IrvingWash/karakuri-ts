@@ -4,7 +4,7 @@ import { IParticlePhysics } from "./iparticle-physics";
 export class ParticleForceGenerator {
     private constructor() {}
 
-    public static weightForce(particle: IParticlePhysics): void {
-        particle.addForce(new Vector2(0, particle.getMass() * particle.getGravity()));
+    public static weightForce(particle: IParticlePhysics): Vector2 {
+        return particle.getGravity().toScaled(particle.getMass());
     }
 }
