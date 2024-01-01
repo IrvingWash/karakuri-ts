@@ -133,4 +133,9 @@ export class Vector2 implements IVector2 {
     public clone(): IVector2 {
         return new Vector2(this.x, this.y);
     }
+
+    public reset(): void {
+        this.x = 0;
+        this.y = 0;
+    }
 }
