@@ -5,10 +5,20 @@ export class ParticleForceGenerator {
     private constructor() {}
 
     public static weightForce(particle: IParticlePhysics): Vector2 {
-        return particle.getGravity().toScaled(particle.getMass());
+        const mass = particle.getMass();
+
+        if (mass === 0) {
+            return new Vector2();
+        }
+
+        return particle.getGravity().toScaled(mass);
     }
 
     public static dragForce(particle: IParticlePhysics, constant: number): IVector2 {
+        if (particle.getMass() === 0) {
+            return new Vector2();
+        }
+
         const velocitySquaredMagnitude = particle.getVelocity().getSquaredMagnitude();
 
         if (velocitySquaredMagnitude <= 0) {
