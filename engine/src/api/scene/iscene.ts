@@ -4,4 +4,6 @@ export interface IScene {
     createEntity(params: EntityParams): Promise<IEntity>;
     start(): void;
     pause(): void;
+    getEntity(name: string): IEntity | undefined;
+    removeEntity(entityToRemove: IEntity): void;
 }

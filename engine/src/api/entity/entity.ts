@@ -7,6 +7,7 @@ import type { ISprite } from "../../core/sprite-renderer";
 import type { EntityParams, IEntity, IParticle, ITransform } from "../../core/objects";
 
 export class Entity implements IEntity {
+    public readonly name: string;
     public readonly transform: ITransform;
     public geometry!: Geometry;
     public readonly behavior?: Behavior;
@@ -14,13 +15,18 @@ export class Entity implements IEntity {
     public readonly particle?: IParticle;
 
     public constructor(params: EntityParams) {
+        this.name = params.name;
         this.transform = params.transform ?? new Transform();
         this.behavior = params.behavior;
         this.sprite = params.sprite;
         this.particle = params.particle;
     }
 
-    public async __init(input: IInput, assetStorage: IAssetStorage): Promise<void> {
+    public async __init(
+        input: IInput,
+        assetStorage: IAssetStorage,
+        entityGetter: (name: string) => IEntity | undefined,
+    ): Promise<void> {
         await this.sprite?.__init(assetStorage);
 
         this.geometry = new Rectangle({
@@ -36,6 +42,7 @@ export class Entity implements IEntity {
             input,
             sprite: this.sprite,
             particle: this.particle,
+            entityGetter,
         });
     }
 

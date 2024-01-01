@@ -43,13 +43,18 @@ export class Scene implements IScene {
     public async createEntity(params: EntityParams): Promise<IEntity> {
         const entity: IEntity = new Entity(params);
 
-        await entity.__init(this._input, this._assetStorage);
+        await entity.__init(this._input, this._assetStorage, this.getEntity);
         entity.start();
 
         this._entities.push(entity);
 
         return entity;
     }
+
+    public getEntity = (name: string): IEntity | undefined => {
+        // TODO: maybe we should have a map of entities
+        return this._entities.find((entity) => name === entity.name);
+    };
 
     public removeEntity(entityToRemove: IEntity): void {
         entityToRemove.destroy();

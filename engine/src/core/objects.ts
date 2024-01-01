@@ -19,13 +19,19 @@ export interface IParticle {
 }
 
 export interface IEntity {
+    readonly name: string;
     readonly transform: ITransform;
     readonly geometry: Geometry;
     readonly behavior?: IBehavior
     readonly sprite?: ISprite;
     readonly particle?: IParticle
 
-    __init(input: IInput, assetStorage: IAssetStorage): Promise<void>;
+    __init(
+        input: IInput,
+        assetStorage: IAssetStorage,
+        entityGetter: (name: string) => IEntity | undefined
+    ): Promise<void>;
+
     start(): void;
     update(deltaTime: number): void;
     reactToCollision(other: IEntity): void;
@@ -39,6 +45,7 @@ export interface IBehavior {
 
     __init(params: BehaviorParams): void;
 
+    getEntity(name: string): IEntity | undefined;
     onStart?(): void;
     onUpdate?(deltaTime: number): void;
     onCollision?(other: IEntity): void;
@@ -46,6 +53,7 @@ export interface IBehavior {
 }
 
 export interface EntityParams {
+    name: string;
     transform?: ITransform;
     behavior?: IBehavior;
     sprite?: ISprite;
@@ -55,6 +63,7 @@ export interface EntityParams {
 export interface BehaviorParams {
     transform: ITransform;
     input: IInput;
+    entityGetter: (name: string) => IEntity | undefined;
     sprite?: ISprite;
     particle?: IParticle;
 }
