@@ -5,6 +5,7 @@
         { "path": "../utils" },
         { "path": "../math" },
         { "path": "../core" },
-        { "path": "../api"}
+        { "path": "../api" },
+        { "path": "../physics" }
     ]
 }

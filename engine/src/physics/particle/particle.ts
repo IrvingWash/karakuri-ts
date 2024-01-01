@@ -1,13 +1,13 @@
 import { Vector2, type IVector2 } from "../../math/vector2";
-import { IParticle } from "./iparticle";
+import { IParticlePhysics } from "./iparticle";
 
-interface ParticleParams {
+interface ParticlePhysicsParams {
     position?: IVector2;
     velocity?: IVector2;
     mass?: number;
 }
 
-export class Particle implements IParticle {
+export class ParticlePhysics implements IParticlePhysics {
     private _position: IVector2;
     private _velocity: IVector2;
     private _mass: number;
@@ -15,7 +15,7 @@ export class Particle implements IParticle {
 
     private _accumulatedForce: IVector2;
 
-    public constructor(params: ParticleParams) {
+    public constructor(params: ParticlePhysicsParams) {
         this._position = params.position ?? new Vector2();
         this._velocity = params.velocity ?? new Vector2();
         this._mass = params.mass ?? 0;

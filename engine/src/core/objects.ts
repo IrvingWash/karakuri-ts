@@ -1,8 +1,9 @@
-import { IVector2 } from "../math/vector2";
-import { IAssetStorage } from "./asset-storage";
+import { type IVector2 } from "../math/vector2";
+import { type IParticlePhysics } from "../physics/particle";
+import { type IAssetStorage } from "./asset-storage";
 import { Geometry } from "./geometry";
-import { IInput } from "./input";
-import { ISprite } from "./sprite-renderer";
+import { type IInput } from "./input";
+import { type ISprite } from "./sprite-renderer";
 
 export type RGBA = [number, number, number, number];
 
@@ -12,11 +13,17 @@ export interface ITransform {
     scale: IVector2;
 }
 
+export interface IParticle {
+    __init(position: IVector2): void;
+    getParticlePhysics(): IParticlePhysics;
+}
+
 export interface IEntity {
     readonly transform: ITransform;
     readonly geometry: Geometry;
     readonly behavior?: IBehavior
     readonly sprite?: ISprite;
+    readonly particle?: IParticle
 
     __init(input: IInput, assetStorage: IAssetStorage): Promise<void>;
     start(): void;
@@ -42,10 +49,12 @@ export interface EntityParams {
     transform?: ITransform;
     behavior?: IBehavior;
     sprite?: ISprite;
+    particle?: IParticle;
 }
 
 export interface BehaviorParams {
     transform: ITransform;
     input: IInput;
-    sprite?: ISprite,
+    sprite?: ISprite;
+    particle?: IParticle;
 }
