@@ -10,9 +10,9 @@ export class PhysicsAffector implements IPhysicsAffector {
 
         const particlePhysics = entity.particle.getParticlePhysics();
 
-        const force = ParticleForceGenerator.weightForce(particlePhysics);
+        const weightForce = ParticleForceGenerator.weightForce(particlePhysics);
 
-        particlePhysics.addForce(force);
+        particlePhysics.addForce(weightForce);
 
         particlePhysics.integrate(time);
     }

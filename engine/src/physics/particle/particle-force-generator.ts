@@ -30,4 +30,10 @@ export class ParticleForceGenerator {
 
         return dragDirection.scale(dragMagnitude);
     }
+
+    public static frictionForce(particle: IParticlePhysics, constant: number): IVector2 {
+        const frictionDirection = particle.getVelocity().toNormalized().scale(-1);
+
+        return frictionDirection.scale(constant);
+    }
 }

@@ -16,6 +16,19 @@ describe("ParticleForceGenerator: Drag force", () => {
     });
 });
 
+describe("ParticleForceGenerator: Friction force", () => {
+    it("should generate friction force", () => {
+        const particle: IParticlePhysics = new ParticlePhysics({});
+
+        particle.addForce(new Vector2(0, 100));
+        particle.integrate(1);
+
+        const dragForce = ParticleForceGenerator.dragForce(particle, 0.1);
+
+        expect(dragForce).toEqual(new Vector2(-0, -1000));
+    });
+});
+
 describe("ParticleForceGenerator: Weight force", () => {
     it("should generate downwards weight force", () => {
         const particleWithDownwardsGravity: IParticlePhysics = new ParticlePhysics({
