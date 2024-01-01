@@ -381,4 +381,12 @@ describe("Vector2", () => {
         expect(vClone).toEqual(v);
         expect(vClone).not.toBe(v);
     });
+
+    it("should reset", () => {
+        const v: IVector2 = new Vector2(984, -232.03);
+
+        v.reset();
+
+        expect(v).toEqual(new Vector2(0, 0));
+    });
 });
