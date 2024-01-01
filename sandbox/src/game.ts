@@ -3,9 +3,9 @@ import {
     Vector2,
     Sprite,
     Transform,
+    Particle,
 } from "karakuri";
 
-import circle from "../assets/circle.png";
 import square from "../assets/square.png";
 
 export async function game(): Promise<void> {
@@ -13,36 +13,17 @@ export async function game(): Promise<void> {
     await engine.init();
 
     const level = engine.createScene();
-    const canvasSize = engine.getCanvasSize();
 
-    const anchor = await level.createEntity({
+    level.createEntity({
+        particle: new Particle(1),
         transform: new Transform({
-            position: new Vector2(canvasSize.width / 2, 0),
-        }),
-        sprite: new Sprite({
-            path: circle,
-            color: [0, 1, 0, 1],
-        }),
-    });
-
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(anchor.transform.position.x, 100),
-        }),
-        sprite: new Sprite({
-            path: circle,
-            color: [1, 0, 0, 1],
-        }),
-    });
-
-    await level.createEntity({
-        transform: new Transform({
-            position: new Vector2(anchor.transform.position.x + (anchor.sprite?.clip.width ?? 0) / 2, (anchor.sprite?.clip.height ?? 0) / 2),
-            scale: new Vector2(0.1, 1),
+            position: new Vector2(500, 500),
+            rotation: new Vector2(45, 0),
         }),
         sprite: new Sprite({
             path: square,
-            color: [0, 0, 1, 1],
+            antialias: false,
+            color: [1, 0, 0, 1],
         }),
     });
 
