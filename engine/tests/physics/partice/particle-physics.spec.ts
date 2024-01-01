@@ -51,4 +51,30 @@ describe("ParticlePhysics", () => {
         pp.integrate(0.5);
         expect(pp.getPosition()).toEqual(new Vector2(22.75, 31));
     });
+
+    it("should not integrate if mass is 0", () => {
+        const mass = 0;
+
+        const pp: IParticlePhysics = new ParticlePhysics({ mass });
+
+        pp.addForce(new Vector2(-30, 5));
+        pp.addForce(new Vector2(1, -1));
+
+        pp.integrate(0.5);
+
+        expect(pp.getPosition()).toEqual(new Vector2());
+    });
+
+    it("should integrate if mass is less than 0", () => {
+        const mass = -1;
+
+        const pp: IParticlePhysics = new ParticlePhysics({ mass });
+
+        pp.addForce(new Vector2(-30, 5));
+        pp.addForce(new Vector2(1, -1));
+
+        pp.integrate(0.5);
+
+        expect(pp.getPosition()).toEqual(new Vector2(7.25, -1));
+    });
 });
