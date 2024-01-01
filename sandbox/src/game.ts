@@ -20,8 +20,8 @@ export async function game(): Promise<void> {
     for (let i = 0; i < 10_000; i++) {
         await level.createEntity({
             particle: new Particle({
-                gravity: PIXELS_PER_METER,
-                mass: 0.01,
+                gravity: new Vector2(0, PIXELS_PER_METER),
+                mass: 0,
             }),
             transform: new Transform({
                 position: new Vector2(Math.random() * canvasSize.width, Math.random() * canvasSize.height),

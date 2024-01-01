@@ -1,5 +1,6 @@
 import { Vector2, type IVector2 } from "../../math/vector2";
 import { IParticlePhysics } from "./iparticle-physics";
+import { defaultGravity, defaultMass } from "./particle-constants";
 
 interface ParticlePhysicsParams {
     position?: IVector2;
@@ -20,8 +21,8 @@ export class ParticlePhysics implements IParticlePhysics {
     public constructor(params: ParticlePhysicsParams) {
         this._position = params.position ?? new Vector2();
         this._velocity = params.velocity ?? new Vector2();
-        this._mass = params.mass ?? 0;
-        this._gravity = params.gravity ?? new Vector2(0, 10);
+        this._mass = params.mass ?? defaultMass;
+        this._gravity = params.gravity ?? defaultGravity.clone();
         this._inverseMass = this._calculateInverseMass(this._mass);
 
         this._accumulatedForce = new Vector2();
