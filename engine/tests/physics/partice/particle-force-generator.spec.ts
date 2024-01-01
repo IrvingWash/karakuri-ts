@@ -3,6 +3,19 @@ import { describe, expect, it } from "@jest/globals";
 import { IParticlePhysics, ParticleForceGenerator, ParticlePhysics } from "../../../src/physics/particle";
 import { IVector2, Vector2 } from "../../../src/math/vector2";
 
+describe("ParticleForceGenerator: Drag force", () => {
+    it("should generate drag force", () => {
+        const particle: IParticlePhysics = new ParticlePhysics({});
+
+        particle.addForce(new Vector2(0, 100));
+        particle.integrate(1);
+
+        const dragForce = ParticleForceGenerator.dragForce(particle, 0.001);
+
+        expect(dragForce).toEqual(new Vector2(-0, -10));
+    });
+});
+
 describe("ParticleForceGenerator: Weight force", () => {
     it("should generate downwards weight force", () => {
         const particleWithDownwardsGravity: IParticlePhysics = new ParticlePhysics({

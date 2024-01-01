@@ -7,4 +7,5 @@ export interface IParticlePhysics {
     getPosition(): IVector2;
     getMass(): number;
     getGravity(): IVector2;
+    getVelocity(): IVector2;
 }

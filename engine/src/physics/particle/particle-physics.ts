@@ -29,6 +29,10 @@ export class ParticlePhysics implements IParticlePhysics {
     }
 
     public integrate(time: number): void {
+        if (this._mass === 0) {
+            return;
+        }
+
         const acceleration = this._accumulatedForce.scale(this._inverseMass);
 
         this._velocity.add(acceleration.scale(time));
@@ -52,6 +56,10 @@ export class ParticlePhysics implements IParticlePhysics {
 
     public getGravity(): IVector2 {
         return this._gravity;
+    }
+
+    public getVelocity(): IVector2 {
+        return this._velocity;
     }
 
     private _clearForces(): void {
