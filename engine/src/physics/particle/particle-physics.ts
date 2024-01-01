@@ -1,10 +1,11 @@
 import { Vector2, type IVector2 } from "../../math/vector2";
-import { IParticlePhysics } from "./iparticle";
+import { IParticlePhysics } from "./iparticle-physics";
 
 interface ParticlePhysicsParams {
     position?: IVector2;
     velocity?: IVector2;
     mass?: number;
+    gravity?: number;
 }
 
 export class ParticlePhysics implements IParticlePhysics {
@@ -12,6 +13,7 @@ export class ParticlePhysics implements IParticlePhysics {
     private _velocity: IVector2;
     private _mass: number;
     private _inverseMass: number;
+    private _gravity: number;
 
     private _accumulatedForce: IVector2;
 
@@ -19,6 +21,7 @@ export class ParticlePhysics implements IParticlePhysics {
         this._position = params.position ?? new Vector2();
         this._velocity = params.velocity ?? new Vector2();
         this._mass = params.mass ?? 0;
+        this._gravity = params.gravity ?? 10;
         this._inverseMass = this._calculateInverseMass(this._mass);
 
         this._accumulatedForce = new Vector2();
@@ -44,6 +47,10 @@ export class ParticlePhysics implements IParticlePhysics {
 
     public getMass(): number {
         return this._mass;
+    }
+
+    public getGravity(): number {
+        return this._gravity;
     }
 
     private _clearForces(): void {

@@ -7,12 +7,14 @@ import { OrthogonalProjection } from "../../core/orthogonal-projection";
 import { AssetStorage, type IAssetStorage } from "../../core/asset-storage";
 import { type IScene, Scene } from "../scene";
 import type { IKarakuri } from "./ikarakuri";
-import { EngineConfiguration } from "./karakuri-objects";
+import type { EngineConfiguration } from "./karakuri-objects";
+import { PhysicsAffector, type IPhysicsAffector } from "../physics-affector";
 
 export class Karakuri implements IKarakuri {
     private readonly _canvas: ICanvas;
     private readonly _looper: ILooper;
     private readonly _input: IInput;
+    private readonly _physicsAffector: IPhysicsAffector;
     private _assetStorage!: IAssetStorage;
     private _spriteRenderer!: ISpriteRenderer;
 
@@ -24,6 +26,7 @@ export class Karakuri implements IKarakuri {
         this._canvas = new Canvas(params?.canvasSize);
         this._looper = new Looper();
         this._input = new Input();
+        this._physicsAffector = new PhysicsAffector();
 
         this._clearColor = params?.clearColor ?? [1, 1, 1, 1];
     }
@@ -52,6 +55,7 @@ export class Karakuri implements IKarakuri {
             spriteRenderer: this._spriteRenderer,
             looper: this._looper,
             assetStorage: this._assetStorage,
+            physicsAffector: this._physicsAffector,
         });
     }
 }
