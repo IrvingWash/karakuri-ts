@@ -5,6 +5,8 @@ export type { ITransform } from "./core/objects";
 export type { IParticle } from "./core/objects";
 export type { Clip, ISprite } from "./core/sprite-renderer";
 
+export { ParticleForceGenerator } from "./physics/particle";
+
 export { Transform } from "./components/transform";
 export { Behavior } from "./components/behavior";
 export { Sprite } from "./components/sprite";
