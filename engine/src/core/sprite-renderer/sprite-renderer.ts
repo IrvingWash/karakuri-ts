@@ -12,7 +12,7 @@ const ATTRIBUTES_PER_VERTEX = 8;
 const ATTRIBUTES_PER_SPRITE = ATTRIBUTES_PER_VERTEX * 4;
 
 export class SpriteRenderer implements ISpriteRenderer {
-    public readonly device: GPUDevice;
+    private readonly _device: GPUDevice;
 
     private readonly _ctx: GPUCanvasContext;
     private readonly _orthogonalProjection: IOrthogonalProjection;
@@ -33,7 +33,7 @@ export class SpriteRenderer implements ISpriteRenderer {
     private readonly _quadIndexBuffer: GPUBuffer;
 
     public constructor(device: GPUDevice, ctx: GPUCanvasContext, orthogonalProjection: IOrthogonalProjection, clearColor: RGBA) {
-        this.device = device;
+        this._device = device;
         this._ctx = ctx;
         this._orthogonalProjection = orthogonalProjection;
         this._clearColor = clearColor;
@@ -45,7 +45,7 @@ export class SpriteRenderer implements ISpriteRenderer {
             GPUBufferUsage.UNIFORM,
         );
 
-        this._projectionMatrixBindGroupLayout = this.device.createBindGroupLayout({
+        this._projectionMatrixBindGroupLayout = this._device.createBindGroupLayout({
             label: "View port bind group layout",
             entries: [{
                 binding: 0,
@@ -104,7 +104,7 @@ export class SpriteRenderer implements ISpriteRenderer {
     }
 
     public beginDrawing(): void {
-        this._commandEncoder = this.device.createCommandEncoder({
+        this._commandEncoder = this._device.createCommandEncoder({
             label: "Filled rectangle drawing command encoder",
         });
 
@@ -115,7 +115,7 @@ export class SpriteRenderer implements ISpriteRenderer {
 
         // TODO: Update camera
 
-        this._projectionMatrixBindGroup = this.device.createBindGroup({
+        this._projectionMatrixBindGroup = this._device.createBindGroup({
             layout: this._projectionMatrixBindGroupLayout,
             entries: [{
                 binding: 0,
@@ -125,7 +125,7 @@ export class SpriteRenderer implements ISpriteRenderer {
             }],
         });
 
-        this.device.queue.writeBuffer(this._projectionMatrixBuffer, 0, this._orthogonalProjection.projectionMatrix.values);
+        this._device.queue.writeBuffer(this._projectionMatrixBuffer, 0, this._orthogonalProjection.projectionMatrix.values);
     }
 
     public finishDrawing(): void {
@@ -145,7 +145,7 @@ export class SpriteRenderer implements ISpriteRenderer {
                 if (vertexBuffer === undefined) {
                     vertexBuffer = this._createAndWriteBuffer(batchDrawCall.vertexData, GPUBufferUsage.VERTEX);
                 } else {
-                    this.device.queue.writeBuffer(vertexBuffer, 0, batchDrawCall.vertexData);
+                    this._device.queue.writeBuffer(vertexBuffer, 0, batchDrawCall.vertexData);
                 }
 
                 usedVertexBuffers.push(vertexBuffer);
@@ -166,7 +166,7 @@ export class SpriteRenderer implements ISpriteRenderer {
 
         this._renderPassEncoder.end();
 
-        this.device.queue.submit([this._commandEncoder.finish()]);
+        this._device.queue.submit([this._commandEncoder.finish()]);
     }
 
     private _createAndWriteBuffer(
@@ -180,13 +180,13 @@ export class SpriteRenderer implements ISpriteRenderer {
             label,
         );
 
-        this.device.queue.writeBuffer(buffer, 0, data);
+        this._device.queue.writeBuffer(buffer, 0, data);
 
         return buffer;
     }
 
     private _createBuffer(byteLength: number, type: GPUFlagsConstant, label?: string): GPUBuffer {
-        const buffer = this.device.createBuffer({
+        const buffer = this._device.createBuffer({
             label,
             size: byteLength,
             usage: type | GPUBufferUsage.COPY_DST,
@@ -256,7 +256,7 @@ export class SpriteRenderer implements ISpriteRenderer {
     }
 
     private _createSpritePipeline(shader: string, texture: Texture): SpritePipeline {
-        const shaderModule = this.device.createShaderModule({
+        const shaderModule = this._device.createShaderModule({
             label: "Sprite shader module",
             code: shader,
         });
@@ -283,7 +283,7 @@ export class SpriteRenderer implements ISpriteRenderer {
             stepMode: "vertex",
         };
 
-        const textureBindGroupLayout = this.device.createBindGroupLayout({
+        const textureBindGroupLayout = this._device.createBindGroupLayout({
             entries: [
                 {
                     binding: 0,
@@ -298,7 +298,7 @@ export class SpriteRenderer implements ISpriteRenderer {
             ],
         });
 
-        const bindGroup = this.device.createBindGroup({
+        const bindGroup = this._device.createBindGroup({
             layout: textureBindGroupLayout,
             entries: [
                 {
@@ -312,9 +312,9 @@ export class SpriteRenderer implements ISpriteRenderer {
             ],
         });
 
-        const pipeline = this.device.createRenderPipeline({
+        const pipeline = this._device.createRenderPipeline({
             label: "Sprite render pipeline",
-            layout: this.device.createPipelineLayout({
+            layout: this._device.createPipelineLayout({
                 bindGroupLayouts: [
                     this._projectionMatrixBindGroupLayout,
                     textureBindGroupLayout,
