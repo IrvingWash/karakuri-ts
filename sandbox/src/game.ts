@@ -23,14 +23,7 @@ class Earth extends Behavior {
             return;
         }
 
-        const force = ParticleForceGenerator.gravitationForce(
-            p,
-            sun.particle?.getParticlePhysics()!,
-            PIXELS_PER_METER * 10,
-            10, 100,
-        );
-
-        p.addForce(force);
+        ParticleForceGenerator.frictionForce(p, 10 * PIXELS_PER_METER);
     }
 }
 

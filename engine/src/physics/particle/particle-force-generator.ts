@@ -1,6 +1,5 @@
 import { type IVector2, Vector2 } from "../../math/vector2";
 import { type IParticlePhysics } from "./iparticle-physics";
-import { clamp } from "../../utils/clamp";
 
 export class ParticleForceGenerator {
     private constructor() {}
@@ -40,29 +39,5 @@ export class ParticleForceGenerator {
         const frictionDirection = particle.getVelocity().toNormalized().scale(-1);
 
         return frictionDirection.scale(constant);
-    }
-
-    public static gravitationForce(
-        particle: IParticlePhysics, other: IParticlePhysics,
-        gravity: number,
-        minDistance: number, maxDistance: number,
-    ): IVector2 {
-        if (particle.getMass() === 0) {
-            return new Vector2();
-        }
-
-        const distance = other.getPosition().toSubtracted(particle.getPosition());
-
-        const squaredMagnitude = clamp(
-            distance.getSquaredMagnitude(),
-            minDistance,
-            maxDistance,
-        );
-
-        const attractionDirection = distance.toNormalized();
-
-        const attractionMagnitude = gravity * (particle.getMass() * other.getMass()) / squaredMagnitude;
-
-        return attractionDirection.scale(attractionMagnitude);
     }
 }
