@@ -1,5 +1,5 @@
 import { IEntity } from "../../core/objects";
-import { ParticleForceGenerator } from "../../physics/particle";
+import { IParticlePhysics, ParticleForceGenerator } from "../../physics/particle";
 import { IPhysicsAffector } from "./iphysics-affector";
 
 export class PhysicsAffector implements IPhysicsAffector {
@@ -10,10 +10,12 @@ export class PhysicsAffector implements IPhysicsAffector {
 
         const particlePhysics = entity.particle.getParticlePhysics();
 
-        const weightForce = ParticleForceGenerator.weightForce(particlePhysics);
-
-        particlePhysics.addForce(weightForce);
+        this._addDefaultForces(particlePhysics);
 
         particlePhysics.integrate(time);
+    }
+
+    private _addDefaultForces(particlePhysics: IParticlePhysics): void {
+        particlePhysics.addForce(ParticleForceGenerator.weightForce(particlePhysics));
     }
 }
