@@ -1,5 +1,4 @@
 import { type IVector2 } from "../math/vector2";
-import { type IParticlePhysics } from "../physics/particle";
 import { type IAssetStorage } from "./asset-storage";
 import { Geometry } from "./geometry";
 import { type IInput } from "./input";
@@ -13,18 +12,12 @@ export interface ITransform {
     scale: IVector2;
 }
 
-export interface IParticle {
-    __init(position: IVector2): void;
-    getParticlePhysics(): IParticlePhysics;
-}
-
 export interface IEntity {
     readonly name: string;
     readonly transform: ITransform;
     readonly geometry: Geometry;
     readonly behavior?: IBehavior
     readonly sprite?: ISprite;
-    readonly particle?: IParticle
 
     __init(
         input: IInput,
@@ -57,7 +50,6 @@ export interface EntityParams {
     transform?: ITransform;
     behavior?: IBehavior;
     sprite?: ISprite;
-    particle?: IParticle;
 }
 
 export interface BehaviorParams {
@@ -65,5 +57,4 @@ export interface BehaviorParams {
     input: IInput;
     entityGetter: (name: string) => IEntity | undefined;
     sprite?: ISprite;
-    particle?: IParticle;
 }
