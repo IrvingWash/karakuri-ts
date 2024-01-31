@@ -2,28 +2,43 @@ import {
     Karakuri,
     Vector2,
     Sprite,
-    Transform,
-    Particle,
     Behavior,
-    ParticleForceGenerator,
+    Transform,
 } from "karakuri";
 
-import circle from "../assets/circle.png";
+import square from "../assets/square.png";
 
-const PIXELS_PER_METER = 50;
+class Box extends Behavior {
+    private _speed = 100;
 
-class Sun extends Behavior {}
+    public onStart(): void {
+        console.log("Box created");
+    }
 
-class Earth extends Behavior {
-    public override onUpdate(_deltaTime: number): void {
-        const sun = this.getEntity("sun");
-        const p = this.particle?.getParticlePhysics();
+    public onUpdate(deltaTime: number): void {
+        this._move(deltaTime);
+    }
 
-        if (p === undefined || sun === undefined) {
-            return;
+    public onDestroy(): void {
+        console.log("Box destroyed");
+    }
+
+    private _move(deltaTime: number): void {
+        if (this.input.isKeyDown("a")) {
+            this.transform.position.subtract(new Vector2(this._speed * deltaTime, 0));
         }
 
-        ParticleForceGenerator.frictionForce(p, 10 * PIXELS_PER_METER);
+        if (this.input.isKeyDown("d")) {
+            this.transform.position.add(new Vector2(this._speed * deltaTime, 0));
+        }
+
+        if (this.input.isKeyDown("w")) {
+            this.transform.position.subtract(new Vector2(0, this._speed * deltaTime));
+        }
+
+        if (this.input.isKeyDown("s")) {
+            this.transform.position.add(new Vector2(0, this._speed * deltaTime));
+        }
     }
 }
 
@@ -32,39 +47,18 @@ export async function game(): Promise<void> {
     await engine.init();
 
     const level = engine.createScene();
-    const canvasSize = engine.getCanvasSize();
 
-    await level.createEntity({
-        name: "sun",
+    level.createEntity({
+        name: Box.name,
+        behavior: new Box(),
         transform: new Transform({
-            position: new Vector2(canvasSize.width / 2 - 150, canvasSize.height / 2 - 150),
-            scale: new Vector2(3, 3),
-        }),
-        behavior: new Sun(),
-        particle: new Particle({
-            gravity: new Vector2(0, 0),
-            mass: 1000,
+            position: new Vector2(300, 300),
+            scale: new Vector2(2, 0.5),
         }),
         sprite: new Sprite({
-            path: circle,
-            color: [1, 0.5, 0, 1],
-        }),
-    });
-
-    await level.createEntity({
-        name: "earth",
-        transform: new Transform({
-            position: new Vector2(canvasSize.width / 2 - 200, canvasSize.height / 2 - 200),
-            scale: new Vector2(0.5, 0.5),
-        }),
-        behavior: new Earth(),
-        particle: new Particle({
-            gravity: new Vector2(0, 0),
-            mass: 1,
-        }),
-        sprite: new Sprite({
-            path: circle,
-            color: [0, 0.5, 1, 1],
+            path: square,
+            antialias: false,
+            color: [0.9, 0.9, 0, 1],
         }),
     });
 
