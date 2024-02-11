@@ -8,6 +8,10 @@ export { Transform } from "./components/transform";
 export { Behavior } from "./components/behavior";
 export { Sprite } from "./components/sprite";
 export { ParticleComponent, type IParticleComponent } from "./components/particle-component";
+export { ParticleForceGenerator } from "./physics/particle";
 
 export { Trigonometry } from "./math/trigonometry";
 export { Vector2, type IVector2 } from "./math/vector2";
+
+// TODO: unify component naming
+// TODO: optimize wherever possible

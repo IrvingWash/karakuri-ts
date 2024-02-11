@@ -20,4 +20,8 @@ export class ParticleComponent implements IParticleComponent {
     public addForce(value: IVector2): void {
         this._particle.addForce(value);
     }
+
+    public getParticle(): IParticle {
+        return this._particle;
+    }
 }

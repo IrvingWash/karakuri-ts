@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@jest/globals";
 
-import { Particle, type IParticle } from "../../src/physics/particle";
-import { Vector2 } from "../../src/math/vector2";
+import { Particle, type IParticle } from "../../../src/physics/particle";
+import { Vector2 } from "../../../src/math/vector2";
 
 const position = new Vector2(10, 20);
 const mass = 3;

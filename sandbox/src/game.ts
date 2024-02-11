@@ -5,6 +5,7 @@ import {
     Behavior,
     Transform,
     ParticleComponent,
+    ParticleForceGenerator,
 } from "karakuri";
 
 import square from "../assets/square.png";
@@ -18,6 +19,14 @@ class Box extends Behavior {
 
     public onUpdate(deltaTime: number): void {
         this._move(deltaTime);
+        this.particle?.addForce(
+            ParticleForceGenerator.weightForce(
+                this.particle.getParticle(),
+                new Vector2(0, 500),
+            ),
+        );
+
+        this.particle?.getParticle().integrate(deltaTime);
     }
 
     public onDestroy(): void {
@@ -27,7 +36,6 @@ class Box extends Behavior {
     private _move(deltaTime: number): void {
         if (this.input.isKeyDown("a")) {
             this.transform.position.subtract(new Vector2(this._speed * deltaTime, 0));
-            this.particle?.addForce(new Vector2(-this._speed * deltaTime, 0));
         }
 
         if (this.input.isKeyDown("d")) {
