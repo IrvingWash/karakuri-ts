@@ -4,6 +4,7 @@ import {
     Sprite,
     Behavior,
     Transform,
+    ParticleComponent,
 } from "karakuri";
 
 import square from "../assets/square.png";
@@ -26,6 +27,7 @@ class Box extends Behavior {
     private _move(deltaTime: number): void {
         if (this.input.isKeyDown("a")) {
             this.transform.position.subtract(new Vector2(this._speed * deltaTime, 0));
+            this.particle?.addForce(new Vector2(-this._speed * deltaTime, 0));
         }
 
         if (this.input.isKeyDown("d")) {
@@ -60,6 +62,7 @@ export async function game(): Promise<void> {
             antialias: false,
             color: [0.9, 0.9, 0, 1],
         }),
+        particle: new ParticleComponent(3),
     });
 
     level.start();

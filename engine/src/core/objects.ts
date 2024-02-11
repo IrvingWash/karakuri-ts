@@ -3,6 +3,7 @@ import { type IAssetStorage } from "./asset-storage";
 import { Geometry } from "./geometry";
 import { type IInput } from "./input";
 import { type ISprite } from "./sprite-renderer";
+import { type IParticleComponent } from "../components/particle-component";
 
 export type RGBA = [number, number, number, number];
 
@@ -18,6 +19,7 @@ export interface IEntity {
     readonly geometry: Geometry;
     readonly behavior?: IBehavior
     readonly sprite?: ISprite;
+    readonly particle?: IParticleComponent;
 
     __init(
         input: IInput,
@@ -35,6 +37,7 @@ export interface IBehavior {
     transform: ITransform;
     input: IInput;
     sprite?: ISprite;
+    particle?: IParticleComponent
 
     __init(params: BehaviorParams): void;
 
@@ -50,6 +53,7 @@ export interface EntityParams {
     transform?: ITransform;
     behavior?: IBehavior;
     sprite?: ISprite;
+    particle?: IParticleComponent;
 }
 
 export interface BehaviorParams {
@@ -57,4 +61,5 @@ export interface BehaviorParams {
     input: IInput;
     entityGetter: (name: string) => IEntity | undefined;
     sprite?: ISprite;
+    particle?: IParticleComponent;
 }
