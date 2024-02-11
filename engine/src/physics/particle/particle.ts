@@ -31,7 +31,7 @@ export class Particle implements IParticle {
 
         this._velocity.add(acceleration.scale(time));
 
-        this._position.add(this._velocity.scale(time));
+        this._position.add(this._velocity.toScaled(time));
 
         this._clearForce();
     }

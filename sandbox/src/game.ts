@@ -5,49 +5,63 @@ import {
     Behavior,
     Transform,
     ParticleComponent,
+    IEntity,
     ParticleForceGenerator,
 } from "karakuri";
 
-import square from "../assets/square.png";
+import circle from "../assets/circle.png";
 
-class Box extends Behavior {
-    private _speed = 100;
+class Sun extends Behavior {
+    private _earth!: IEntity;
 
-    public onStart(): void {
-        console.log("Box created");
+    public addEarth(earth: IEntity): void {
+        this._earth = earth;
     }
 
-    public onUpdate(deltaTime: number): void {
-        this._move(deltaTime);
-        this.particle?.addForce(
-            ParticleForceGenerator.weightForce(
-                this.particle.getParticle(),
-                new Vector2(0, 500),
-            ),
+    public override onUpdate(deltaTime: number): void {
+        const gravitationalForce = ParticleForceGenerator.gravitationalForce(
+            this.particle!.getParticle(),
+            this._earth.particle!.getParticle(),
+            1000,
+            5, 100,
         );
+
+        this.particle?.addForce(gravitationalForce);
+
+        this.particle?.getParticle().integrate(deltaTime);
+    }
+}
+
+class Earth extends Behavior {
+    private _sun!: IEntity;
+    private _speed: number = 1000;
+
+    public addSun(sun: IEntity): void {
+        this._sun = sun;
+    };
+
+    public override onUpdate(deltaTime: number): void {
+        this._move();
+
+        const gravitationalForce = ParticleForceGenerator.gravitationalForce(
+            this.particle!.getParticle(),
+            this._sun.particle!.getParticle(),
+            1000,
+            5, 100,
+        );
+
+        this.particle?.addForce(gravitationalForce);
 
         this.particle?.getParticle().integrate(deltaTime);
     }
 
-    public onDestroy(): void {
-        console.log("Box destroyed");
-    }
-
-    private _move(deltaTime: number): void {
-        if (this.input.isKeyDown("a")) {
-            this.transform.position.subtract(new Vector2(this._speed * deltaTime, 0));
+    private _move(): void {
+        if (this.input.isKeyDown("s")) {
+            this.particle?.addForce(new Vector2(0, this._speed));
         }
 
         if (this.input.isKeyDown("d")) {
-            this.transform.position.add(new Vector2(this._speed * deltaTime, 0));
-        }
-
-        if (this.input.isKeyDown("w")) {
-            this.transform.position.subtract(new Vector2(0, this._speed * deltaTime));
-        }
-
-        if (this.input.isKeyDown("s")) {
-            this.transform.position.add(new Vector2(0, this._speed * deltaTime));
+            this.particle?.addForce(new Vector2(this._speed, 0));
         }
     }
 }
@@ -58,20 +72,41 @@ export async function game(): Promise<void> {
 
     const level = engine.createScene();
 
-    level.createEntity({
-        name: Box.name,
-        behavior: new Box(),
-        transform: new Transform({
-            position: new Vector2(300, 300),
-            scale: new Vector2(2, 0.5),
-        }),
+    const sunBehavior = new Sun();
+    const sun = await level.createEntity({
+        name: "Sun",
+        behavior: sunBehavior,
         sprite: new Sprite({
-            path: square,
+            path: circle,
             antialias: false,
-            color: [0.9, 0.9, 0, 1],
+            color: [1, 1, 0, 1],
         }),
-        particle: new ParticleComponent(3),
+        transform: new Transform({
+            position: new Vector2(500, 500),
+            scale: new Vector2(2, 2),
+        }),
+        particle: new ParticleComponent(20),
     });
+
+    const earthBehavior = new Earth();
+    earthBehavior.addSun(sun);
+
+    const earth = await level.createEntity({
+        name: "Earth",
+        behavior: earthBehavior,
+        sprite: new Sprite({
+            path: circle,
+            antialias: false,
+            color: [0, 0.8, 1, 1],
+        }),
+        transform: new Transform({
+            position: new Vector2(200, 200),
+            scale: new Vector2(0.5, 0.5),
+        }),
+        particle: new ParticleComponent(1),
+    });
+
+    sunBehavior.addEarth(earth);
 
     level.start();
 }

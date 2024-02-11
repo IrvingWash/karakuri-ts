@@ -42,7 +42,7 @@ describe("Particle", () => {
         particle.integrate(0.5);
 
         expect(particle.getPosition()).toEqual(new Vector2(100.3, 100.125));
-        expect(particle.getVelocity()).toEqual(new Vector2(0.30000000000000004, 0.125));
+        expect(particle.getVelocity()).toEqual(new Vector2(0.6000000000000001, 0.25));
     });
 
     it("should not integrate if mass is 0", () => {
