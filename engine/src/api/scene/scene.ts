@@ -35,6 +35,8 @@ export class Scene implements IScene {
         this._assetStorage = assetStorage;
     }
 
+    // TODO: Remove async
+    // Push the promises into an array and await for them in `start`!
     public async createEntity(params: EntityParams): Promise<IEntity> {
         const entity: IEntity = new Entity(params);
 

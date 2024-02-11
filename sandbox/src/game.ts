@@ -110,6 +110,5 @@ export async function game(): Promise<void> {
         particle: new ParticleComponent(1),
     });
 
-    // TODO: Make start async, instead of createEntity!
     level.start();
 }
