@@ -39,7 +39,6 @@ export class Scene implements IScene {
         const entity: IEntity = new Entity(params);
 
         await entity.__init(this._input, this._assetStorage, this.getEntity);
-        entity.start();
 
         this._entities.push(entity);
 
@@ -58,6 +57,10 @@ export class Scene implements IScene {
     }
 
     public start(): void {
+        for (const entity of this._entities) {
+            entity.start();
+        }
+
         this._looper.start((deltaTime) => {
             for (const entity of this._entities) {
                 entity.update(deltaTime);
@@ -76,9 +79,5 @@ export class Scene implements IScene {
             }
             this._spriteRenderer.finishDrawing();
         });
-    }
-
-    public pause(): void {
-        this._looper.pause();
     }
 }

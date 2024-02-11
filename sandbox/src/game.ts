@@ -12,16 +12,16 @@ import {
 import circle from "../assets/circle.png";
 
 class Sun extends Behavior {
-    private _earth!: IEntity;
+    private _earth?: IEntity;
 
-    public addEarth(earth: IEntity): void {
-        this._earth = earth;
+    public override onStart(): void {
+        this._earth = this.getEntity("Earth");
     }
 
     public override onUpdate(deltaTime: number): void {
         const gravitationalForce = ParticleForceGenerator.gravitationalForce(
             this.particle!.getParticle(),
-            this._earth.particle!.getParticle(),
+            this._earth!.particle!.getParticle(),
             1000,
             5, 100,
         );
@@ -33,19 +33,19 @@ class Sun extends Behavior {
 }
 
 class Earth extends Behavior {
-    private _sun!: IEntity;
+    private _sun?: IEntity;
     private _speed: number = 100;
 
-    public addSun(sun: IEntity): void {
-        this._sun = sun;
-    };
+    public override onStart(): void {
+        this._sun = this.getEntity("Sun");
+    }
 
     public override onUpdate(deltaTime: number): void {
         this._move();
 
         const gravitationalForce = ParticleForceGenerator.gravitationalForce(
             this.particle!.getParticle(),
-            this._sun.particle!.getParticle(),
+            this._sun!.particle!.getParticle(),
             1000,
             5, 100,
         );
@@ -80,10 +80,9 @@ export async function game(): Promise<void> {
 
     const level = engine.createScene();
 
-    const sunBehavior = new Sun();
-    const sun = await level.createEntity({
+    await level.createEntity({
         name: "Sun",
-        behavior: sunBehavior,
+        behavior: new Sun(),
         sprite: new Sprite({
             path: circle,
             antialias: false,
@@ -96,12 +95,9 @@ export async function game(): Promise<void> {
         particle: new ParticleComponent(20),
     });
 
-    const earthBehavior = new Earth();
-    earthBehavior.addSun(sun);
-
-    const earth = await level.createEntity({
+    await level.createEntity({
         name: "Earth",
-        behavior: earthBehavior,
+        behavior: new Earth(),
         sprite: new Sprite({
             path: circle,
             antialias: false,
@@ -114,7 +110,6 @@ export async function game(): Promise<void> {
         particle: new ParticleComponent(1),
     });
 
-    sunBehavior.addEarth(earth);
-
+    // TODO: Make start async, instead of createEntity!
     level.start();
 }
