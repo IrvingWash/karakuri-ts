@@ -34,7 +34,7 @@ class Sun extends Behavior {
 
 class Earth extends Behavior {
     private _sun!: IEntity;
-    private _speed: number = 1000;
+    private _speed: number = 100;
 
     public addSun(sun: IEntity): void {
         this._sun = sun;
@@ -56,6 +56,14 @@ class Earth extends Behavior {
     }
 
     private _move(): void {
+        if (this.input.isKeyDown("w")) {
+            this.particle?.addForce(new Vector2(0, -this._speed));
+        }
+
+        if (this.input.isKeyDown("a")) {
+            this.particle?.addForce(new Vector2(-this._speed, 0));
+        }
+
         if (this.input.isKeyDown("s")) {
             this.particle?.addForce(new Vector2(0, this._speed));
         }
