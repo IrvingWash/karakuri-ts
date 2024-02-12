@@ -64,4 +64,21 @@ export class ParticleForceGenerator {
 
         return attractionDirection.scale(attractionMagnitude);
     }
+
+    public static springForce(
+        particle: IParticle,
+        anchor: IParticle,
+        restLength: number,
+        constant: number,
+    ): IVector2 {
+        const distanceVector = particle.getPosition().toSubtracted(anchor.getPosition());
+
+        const displacement = distanceVector.getMagnitude() - restLength;
+
+        const springDirection = distanceVector.toNormalized();
+
+        const springMagnitude = -constant * displacement;
+
+        return springDirection.scale(springMagnitude);
+    }
 };

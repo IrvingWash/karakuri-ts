@@ -58,4 +58,21 @@ describe("ParticleForceGenerator", () => {
 
         expect(gravitationalForce).toEqual(new Vector2(2121.3203435596424, 2121.3203435596424));
     });
+
+    it("should generate spring force", () => {
+        const particle = new Particle({
+            position: new Vector2(10, 10),
+            mass: 3,
+            velocity: new Vector2(10, 10),
+        });
+
+        const other = new Particle({
+            position: new Vector2(30, 30),
+            mass: 100,
+        });
+
+        const gravitationalForce = ParticleForceGenerator.springForce(particle, other, 500, 10);
+
+        expect(gravitationalForce).toEqual(new Vector2(-3335.533905932737, -3335.533905932737));
+    });
 });
