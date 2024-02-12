@@ -1,5 +1,6 @@
 import "./index.css";
 
-import { game } from "./game";
+// import { game } from "./planetes";
+import { game } from "./spring";
 
 game();
