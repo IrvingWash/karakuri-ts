@@ -27,9 +27,11 @@ class Rope extends Behavior {
     }
 
     public override onUpdate(_deltaTime: number): void {
+        const distance = this._ball!.transform.position.toSubtracted(this._anchor!.transform.position).getMagnitude();
+
         this.transform.scale = new Vector2(
-            Math.min(1 / (this._ball!.transform.position.y + this._anchor!.transform.position.y) * 10, 0.1),
-            (this._ball!.transform.position.y + this._anchor!.transform.position.y) / 100,
+            Math.min(1 / distance * 10, 0.1),
+            distance / 100,
         );
 
         this.transform.rotation.set(new Vector2(this._findRotation(), 0));
@@ -46,10 +48,17 @@ class Rope extends Behavior {
 
 class Ball extends Behavior {
     private _anchor?: IEntity;
-    private _speed: number = 100;
+    private _speed: number = 200;
 
     public override onStart(): void {
         this._anchor = this.getEntity("Anchor");
+
+        this.transform.position.set(
+            new Vector2(
+                this.transform.position.x,
+                this.transform.position.y,
+            ),
+        );
     }
 
     public override onUpdate(deltaTime: number): void {
