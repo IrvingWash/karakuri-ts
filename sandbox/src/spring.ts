@@ -10,6 +10,39 @@ import {
 } from "karakuri";
 
 import circle from "../assets/circle.png";
+import square from "../assets/square.png";
+
+class Rope extends Behavior {
+    private _anchor?: IEntity;
+    private _ball?: IEntity;
+
+    public override onStart(): void {
+        this._anchor = this.getEntity("Anchor");
+        this._ball = this.getEntity("Ball");
+
+        this.transform.position.set(new Vector2(
+            this._anchor!.transform.position.x + this._anchor!.sprite!.clip.width / 2,
+            this._anchor!.transform.position.y + this._anchor!.sprite!.clip.height / 2,
+        ));
+    }
+
+    public override onUpdate(_deltaTime: number): void {
+        this.transform.scale = new Vector2(
+            Math.min(1 / (this._ball!.transform.position.y + this._anchor!.transform.position.y) * 10, 0.1),
+            (this._ball!.transform.position.y + this._anchor!.transform.position.y) / 100,
+        );
+
+        this.transform.rotation.set(new Vector2(this._findRotation(), 0));
+    }
+
+    private _findRotation(): number {
+        const a = this._anchor!.transform.position.y - this._ball!.transform.position.y;
+
+        const b = this._anchor!.transform.position.x - this._ball!.transform.position.x;
+
+        return -Math.atan(b / a);
+    }
+}
 
 class Ball extends Behavior {
     private _anchor?: IEntity;
@@ -25,8 +58,8 @@ class Ball extends Behavior {
         const springForce = ParticleForceGenerator.springForce(
             this.particle!.getParticle(),
             this._anchor!.particle!.getParticle(),
-            100,
-            1,
+            200,
+            10,
         );
 
         const dragForce = ParticleForceGenerator.dragForce(
@@ -34,8 +67,11 @@ class Ball extends Behavior {
             0.001,
         );
 
+        const weightForce = ParticleForceGenerator.weightForce(this.particle!.getParticle(), new Vector2(0, 500));
+
         this.particle?.addForce(springForce);
         this.particle?.addForce(dragForce);
+        this.particle?.addForce(weightForce);
 
         this.particle?.getParticle().integrate(deltaTime);
     }
@@ -66,6 +102,18 @@ export async function game(): Promise<void> {
     const level = engine.createScene();
 
     await level.createEntity({
+        name: "Anchor",
+        sprite: new Sprite({
+            path: circle,
+            color: [0, 8, 0, 1],
+        }),
+        transform: new Transform({
+            position: new Vector2(500, 0),
+        }),
+        particle: new ParticleComponent(0),
+    });
+
+    await level.createEntity({
         name: "Ball",
         sprite: new Sprite({
             path: circle,
@@ -80,15 +128,13 @@ export async function game(): Promise<void> {
     });
 
     await level.createEntity({
-        name: "Anchor",
+        name: "Rope",
         sprite: new Sprite({
-            path: circle,
-            color: [7, 0, 0, 1],
+            path: square,
+            color: [8, 0, 0, 1],
         }),
-        transform: new Transform({
-            position: new Vector2(500, 300),
-        }),
-        particle: new ParticleComponent(0),
+        transform: new Transform({}),
+        behavior: new Rope(),
     });
 
     level.start();

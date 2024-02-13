@@ -138,4 +138,9 @@ export class Vector2 implements IVector2 {
         this.x = 0;
         this.y = 0;
     }
+
+    public set(value: IVector2): void {
+        this.x = value.x;
+        this.y = value.y;
+    }
 }

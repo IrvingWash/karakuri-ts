@@ -23,4 +23,5 @@ export interface IVector2 {
     toRotatedAt(center: IVector2, angle: number): IVector2;
     clone(): IVector2;
     reset(): void;
+    set(value: IVector2): void;
 }
